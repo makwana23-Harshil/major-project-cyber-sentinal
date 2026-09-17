@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Scan History — CyberSentinel Pro</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/dashboard.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    .filter-bar { display:flex; gap:0.75rem; flex-wrap:wrap; align-items:center; margin-bottom:1.25rem; }
+    .filter-btn { padding:6px 16px; border-radius:100px; font-size:0.82rem; font-weight:600; cursor:pointer; border:1.5px solid var(--border-soft); background:transparent; color:var(--text-secondary); transition:all var(--transition); }
+    .filter-btn.active, .filter-btn:hover { background:var(--navy); color:#fff; border-color:var(--navy); }
+    .search-wrap { flex:1; min-width:200px; position:relative; }
+    .search-wrap input { width:100%; padding:8px 12px 8px 36px; border:1.5px solid var(--border-soft); border-radius:100px; font-size:0.85rem; outline:none; transition:all var(--transition); }
+    .search-wrap input:focus { border-color:var(--blue); box-shadow:0 0 0 3px var(--blue-glow); }
+    .search-wrap .si { position:absolute; left:12px; top:50%; transform:translateY(-50%); color:var(--text-light); }
+    .detail-row { background:var(--bg-card); }
+    .detail-row td { padding:0.75rem 1.25rem; }
+  </style>
+</head>
+<body>
+
+<!-- Navbar -->
+<nav class="navbar" id="navbar">
+  <div class="nav-logo">
+    <div class="logo-icon">🛡️</div>
+    <span>CyberSentinel <span style="color:var(--blue)">Pro</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <a href="scan.html" class="nav-link">Scanner</a>
+    <a href="history.html" class="nav-link active">History</a>
+  </div>
+  <div class="nav-actions">
+    <span id="user-name-nav" class="text-muted" style="font-size:0.85rem;"></span>
+    <a href="scan.html" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> New Scan</a>
+  </div>
+</nav>
+
+<div class="container pt-nav" style="padding-top:90px;padding-bottom:3rem;">
+  <div style="padding:1.5rem 0 1rem;">
+    <h1 style="font-size:1.75rem;">Scan History</h1>
+    <p class="text-muted">All your past threat detection results in one place.</p>
+  </div>
+
+  <!-- Filters -->
+  <div class="filter-bar">
+    <div class="search-wrap">
+      <i class="fas fa-search si"></i>
+      <input type="text" id="search-input" placeholder="Search by content, verdict..." oninput="filterScans()">
+    </div>
+    <button class="filter-btn active" data-filter="all" onclick="setFilter('all',this)">All</button>
+    <button class="filter-btn" data-filter="sms" onclick="setFilter('sms',this)">📱 SMS</button>
+    <button class="filter-btn" data-filter="email_address" onclick="setFilter('email_address',this)">✉️ Email Addr</button>
+    <button class="filter-btn" data-filter="email_body" onclick="setFilter('email_body',this)">📄 Email Body</button>
+    <button class="filter-btn" data-filter="url" onclick="setFilter('url',this)">🔗 URL</button>
+    <button class="filter-btn" data-filter="threats" onclick="setFilter('threats',this)" style="border-color:rgba(255,71,87,0.3);color:var(--danger);">🔴 Threats Only</button>
+  </div>
+
+  <!-- Table -->
+  <div class="chart-card">
+    <div class="table-wrap" id="history-table">
+      <div class="empty-state"><div class="empty-icon">⏳</div><p>Loading history...</p></div>
+    </div>
+    <div id="no-results" class="empty-state hidden">
+      <div class="empty-icon">🔍</div>
+      <p>No scans match your search or filter.</p>
+      <a href="scan.html" class="btn btn-primary mt-2">Run a New Scan</a>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/animations.js"></script>
+<script>
+  if (!requireAuth()) {}
+  else loadHistory();
+
+  let allScans = [];
+  let currentFilter = 'all';
+
+  async function loadHistory() {
+    const user = getUserData();
+    if (user.name) document.getElementById('user-name-nav').textContent = `Hi, ${user.name.split(' ')[0]}`;
+    try {
+      const res = await API.get('/api/user/history');
+      const data = await res.json();
+      if (!data.success) throw new Error(data.message);
+      allScans = data.scans;
+      renderTable(allScans);
+    } catch(e) {
+      document.getElementById('history-table').innerHTML = `<div class="empty-state"><p>Error: ${e.message}</p></div>`;
+    }
+  }
+
+  const iconMap = { sms:'📱', email_address:'✉️', email_body:'📄', url:'🔗' };
+  const threatVerdicts = ['DANGEROUS','PHISHING','SPAM','FAKE','DISPOSABLE','INVALID'];
+
+  function setFilter(filter, btn) {
+    currentFilter = filter;
+    document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    filterScans();
+  }
+
+  function filterScans() {
+    const q = document.getElementById('search-input').value.toLowerCase();
+    let filtered = allScans;
+    if (currentFilter === 'threats') filtered = filtered.filter(s => threatVerdicts.includes(s.verdict));
+    else if (currentFilter !== 'all') filtered = filtered.filter(s => s.scan_type === currentFilter);
+    if (q) filtered = filtered.filter(s => s.input_text.toLowerCase().includes(q) || (s.verdict||'').toLowerCase().includes(q));
+    renderTable(filtered);
+  }
+
+  function renderTable(scans) {
+    const wrap = document.getElementById('history-table');
+    const noRes = document.getElementById('no-results');
+    if (!scans.length) {
+      wrap.innerHTML = '';
+      noRes.classList.remove('hidden');
+      return;
+    }
+    noRes.classList.add('hidden');
+    const rows = scans.map(s => {
+      const v = s.verdict||'';
+      const cls = threatVerdicts.includes(v)?'badge-dangerous':v==='SUSPICIOUS'?'badge-suspicious':'badge-safe';
+      const date = new Date(s.created_at).toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric',hour:'2-digit',minute:'2-digit'});
+      const linksBadge = s.link_count > 0 ? `<span class="link-tag">${s.link_count} link${s.link_count>1?'s':''}</span>` : '';
+      return `<tr onclick="toggleDetail(${s.id}, this)" style="cursor:pointer;">
+        <td><span style="font-size:1.1rem;">${iconMap[s.scan_type]||'🔍'}</span> <span style="font-size:0.8rem;text-transform:uppercase;font-weight:600;color:var(--text-secondary);">${s.scan_type.replace('_',' ')}</span></td>
+        <td style="max-width:300px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.85rem;" title="${s.input_text}">${s.input_text}</td>
+        <td><span class="badge ${cls}">${v}</span></td>
+        <td>
+          <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:60px;height:6px;background:var(--border-soft);border-radius:3px;overflow:hidden;"><div style="width:${s.risk_score||0}%;height:100%;background:${(s.risk_score||0)>=65?'var(--danger)':(s.risk_score||0)>=35?'var(--warning)':'var(--success)'};border-radius:3px;"></div></div>
+            <span style="font-size:0.8rem;font-weight:600;">${s.risk_score||0}</span>
+          </div>
+        </td>
+        <td>${linksBadge}</td>
+        <td style="font-size:0.8rem;color:var(--text-light);">${date}</td>
+      </tr>
+      <tr id="detail-${s.id}" class="detail-row hidden">
+        <td colspan="6">
+          <div style="padding:0.5rem 0;">
+            <strong style="font-size:0.82rem;color:var(--text-secondary);">Full Content:</strong>
+            <div style="font-size:0.82rem;margin-top:4px;padding:8px;background:#fff;border-radius:6px;border:1px solid var(--border-soft);word-break:break-word;max-height:120px;overflow-y:auto;">${escHtml(s.input_text)}</div>
+            ${s.details && Object.keys(s.details).length ? `
+            <div style="margin-top:8px;display:flex;flex-wrap:wrap;gap:6px;">
+              ${Object.entries(s.details).filter(([k]) => !['verdict','confidence','risk_score','extracted_urls','link_inspections'].includes(k)).slice(0,6).map(([k,v]) =>
+                `<span style="font-size:0.75rem;padding:3px 8px;background:var(--bg-card);border-radius:4px;border:1px solid var(--border-soft);">
+                  <strong>${k.replace(/_/g,' ')}:</strong> ${typeof v === 'object' ? JSON.stringify(v).slice(0,40) : String(v).slice(0,40)}
+                </span>`
+              ).join('')}
+            </div>` : ''}
+          </div>
+        </td>
+      </tr>`;
+    }).join('');
+    wrap.innerHTML = `<table><thead><tr><th>Type</th><th>Content</th><th>Verdict</th><th>Risk</th><th>Links</th><th>Scanned</th></tr></thead><tbody>${rows}</tbody></table>`;
+  }
+
+  function toggleDetail(id, row) {
+    const det = document.getElementById('detail-' + id);
+    det.classList.toggle('hidden');
+  }
+
+  function escHtml(str) {
+    return (str||'').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;');
+  }
+</script>
+</body>
+</html>

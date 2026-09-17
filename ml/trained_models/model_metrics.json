@@ -1,0 +1,267 @@
+{
+  "platform": "Cyber Sentinel AI Platform",
+  "url_classifier": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "confusion_matrix": [
+      [
+        320,
+        0
+      ],
+      [
+        0,
+        320
+      ]
+    ],
+    "total_test_samples": 640,
+    "top_features": [
+      {
+        "feature": "keyword_count",
+        "importance": 0.1886
+      },
+      {
+        "feature": "brand_impersonation",
+        "importance": 0.1291
+      },
+      {
+        "feature": "url_length",
+        "importance": 0.1237
+      },
+      {
+        "feature": "is_https",
+        "importance": 0.0893
+      },
+      {
+        "feature": "num_digits",
+        "importance": 0.081
+      },
+      {
+        "feature": "url_entropy",
+        "importance": 0.0685
+      },
+      {
+        "feature": "digit_letter_ratio",
+        "importance": 0.052
+      },
+      {
+        "feature": "is_suspicious_tld",
+        "importance": 0.0514
+      },
+      {
+        "feature": "host_num_hyphens",
+        "importance": 0.0469
+      },
+      {
+        "feature": "domain_entropy",
+        "importance": 0.0309
+      },
+      {
+        "feature": "num_letters",
+        "importance": 0.0229
+      },
+      {
+        "feature": "has_ip",
+        "importance": 0.0151
+      },
+      {
+        "feature": "domain_length",
+        "importance": 0.0138
+      },
+      {
+        "feature": "num_dots",
+        "importance": 0.0133
+      },
+      {
+        "feature": "subdomain_count",
+        "importance": 0.0106
+      }
+    ],
+    "model_type": "RandomForestClassifier (120 trees)"
+  },
+  "text_classifier": {
+    "accuracy": 1.0,
+    "precision": 1.0,
+    "recall": 1.0,
+    "f1_score": 1.0,
+    "confusion_matrix": [
+      [
+        320,
+        0
+      ],
+      [
+        0,
+        320
+      ]
+    ],
+    "total_test_samples": 640,
+    "top_phishing_tokens": [
+      {
+        "token": "http",
+        "weight": 3.5191
+      },
+      {
+        "token": "immediately",
+        "weight": 2.7489
+      },
+      {
+        "token": "account",
+        "weight": 2.6164
+      },
+      {
+        "token": "case",
+        "weight": 2.3697
+      },
+      {
+        "token": "case ticket",
+        "weight": 2.3697
+      },
+      {
+        "token": "click",
+        "weight": 2.2318
+      },
+      {
+        "token": "xyz",
+        "weight": 2.1585
+      },
+      {
+        "token": "ticket",
+        "weight": 1.9424
+      },
+      {
+        "token": "security",
+        "weight": 1.6754
+      },
+      {
+        "token": "update",
+        "weight": 1.6059
+      },
+      {
+        "token": "card",
+        "weight": 1.5983
+      },
+      {
+        "token": "000",
+        "weight": 1.5532
+      },
+      {
+        "token": "urgent",
+        "weight": 1.4779
+      },
+      {
+        "token": "number",
+        "weight": 1.4689
+      },
+      {
+        "token": "login",
+        "weight": 1.4686
+      },
+      {
+        "token": "tk",
+        "weight": 1.4531
+      },
+      {
+        "token": "immediately http",
+        "weight": 1.3952
+      },
+      {
+        "token": "details",
+        "weight": 1.3186
+      },
+      {
+        "token": "otp",
+        "weight": 1.2685
+      },
+      {
+        "token": "enter",
+        "weight": 1.2681
+      }
+    ],
+    "top_safe_tokens": [
+      {
+        "token": "reference",
+        "weight": 2.6357
+      },
+      {
+        "token": "reference id",
+        "weight": 2.6357
+      },
+      {
+        "token": "id",
+        "weight": 2.5239
+      },
+      {
+        "token": "minutes",
+        "weight": 1.8005
+      },
+      {
+        "token": "hi",
+        "weight": 1.463
+      },
+      {
+        "token": "code",
+        "weight": 1.3373
+      },
+      {
+        "token": "hey",
+        "weight": 1.2625
+      },
+      {
+        "token": "thank",
+        "weight": 1.2345
+      },
+      {
+        "token": "receipt",
+        "weight": 1.2198
+      },
+      {
+        "token": "pm",
+        "weight": 1.194
+      },
+      {
+        "token": "00 pm",
+        "weight": 1.194
+      },
+      {
+        "token": "august",
+        "weight": 1.1601
+      },
+      {
+        "token": "time",
+        "weight": 1.1171
+      },
+      {
+        "token": "team",
+        "weight": 1.0626
+      },
+      {
+        "token": "tomorrow",
+        "weight": 1.0355
+      },
+      {
+        "token": "weekly",
+        "weight": 1.0344
+      },
+      {
+        "token": "reminder",
+        "weight": 1.0318
+      },
+      {
+        "token": "let",
+        "weight": 1.0226
+      },
+      {
+        "token": "chrome browser",
+        "weight": 0.8499
+      },
+      {
+        "token": "ignore",
+        "weight": 0.8499
+      }
+    ],
+    "model_type": "TF-IDF + LogisticRegression (C=2.0)"
+  },
+  "overall_accuracy": 1.0,
+  "status": "Trained & Calibrated"
+}

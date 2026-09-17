@@ -1,0 +1,213 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register — CyberSentinel Pro</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+  <style>
+    body { min-height: 100vh; display: flex; align-items: center; background: linear-gradient(145deg,#f0f7ff 0%,#e8f4ff 100%); }
+    .reg-wrapper { width: 100%; min-height: 100vh; display: grid; grid-template-columns: 1fr 1fr; }
+    .reg-left {
+      background: linear-gradient(145deg, #0d5c8a 0%, var(--navy) 100%);
+      padding: 3rem;
+      display: flex; flex-direction: column; justify-content: center;
+      position: relative; overflow: hidden; color: #fff;
+    }
+    .reg-left::before {
+      content: ''; position: absolute; top: -30%; right: -10%;
+      width: 500px; height: 500px;
+      background: radial-gradient(circle, rgba(0,212,255,0.2) 0%, transparent 70%);
+      border-radius: 50%;
+    }
+    .reg-left-content { position: relative; z-index: 1; }
+    .step-guide { margin-top: 2.5rem; display: flex; flex-direction: column; gap: 1.25rem; }
+    .sg-item { display: flex; align-items: center; gap: 1rem; }
+    .sg-dot { width: 10px; height: 10px; border-radius: 50%; background: var(--blue); flex-shrink: 0; }
+    .sg-text { font-size: 0.88rem; color: rgba(255,255,255,0.75); }
+    .reg-right { display: flex; align-items: center; justify-content: center; padding: 2rem; }
+    .reg-box { width: 100%; max-width: 440px; }
+    .reg-title { font-size: 1.7rem; font-weight: 700; margin-bottom: 0.25rem; }
+    .reg-sub { color: var(--text-secondary); font-size: 0.88rem; margin-bottom: 1.75rem; }
+    .pw-strength { height: 4px; border-radius: 2px; margin-top: 6px; background: var(--border-soft); overflow: hidden; }
+    .pw-strength-bar { height: 100%; border-radius: 2px; transition: width 0.4s ease, background 0.4s ease; width: 0%; }
+    .strength-label { font-size: 0.75rem; color: var(--text-light); margin-top: 3px; }
+    @media (max-width: 768px) { .reg-wrapper { grid-template-columns: 1fr; } .reg-left { display: none; } }
+    .logo-row { display:flex;align-items:center;gap:10px;font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.2rem;margin-bottom:2rem; }
+    .logo-icon { width:36px;height:36px;background:linear-gradient(135deg,var(--navy),var(--blue));border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:1rem; }
+    .pw-toggle { position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; color: var(--text-light); }
+  </style>
+</head>
+<body>
+<div class="reg-wrapper">
+  <!-- Left -->
+  <div class="reg-left">
+    <div class="reg-left-content">
+      <div style="display:flex;align-items:center;gap:10px;margin-bottom:2.5rem;">
+        <div style="width:42px;height:42px;background:linear-gradient(135deg,rgba(255,255,255,0.2),rgba(0,212,255,0.3));border-radius:12px;display:flex;align-items:center;justify-content:center;font-size:1.2rem;border:1px solid rgba(255,255,255,0.2);">🛡️</div>
+        <span style="font-family:'Space Grotesk',sans-serif;font-weight:700;font-size:1.2rem;">CyberSentinel Pro</span>
+      </div>
+      <h1 style="font-size:2.2rem;margin-bottom:1rem;">Start Protecting<br>Yourself Today</h1>
+      <p style="color:rgba(255,255,255,0.65);font-size:0.95rem;max-width:380px;line-height:1.7;">Create your free account and get instant access to all four AI-powered threat detection modules.</p>
+      <div class="step-guide">
+        <div class="sg-item"><div class="sg-dot"></div><div class="sg-text">Scan unlimited SMS messages for spam</div></div>
+        <div class="sg-item"><div class="sg-dot"></div><div class="sg-text">Validate email addresses before responding</div></div>
+        <div class="sg-item"><div class="sg-dot"></div><div class="sg-text">Analyze email bodies for phishing attempts</div></div>
+        <div class="sg-item"><div class="sg-dot"></div><div class="sg-text">Inspect URLs with live deep crawl technology</div></div>
+        <div class="sg-item"><div class="sg-dot"></div><div class="sg-text">View your personal threat analytics dashboard</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Right -->
+  <div class="reg-right">
+    <div class="reg-box">
+      <div class="logo-row">
+        <div class="logo-icon">🛡️</div>
+        <span>CyberSentinel <span style="color:var(--blue)">Pro</span></span>
+      </div>
+      <div class="reg-title">Create Account</div>
+      <div class="reg-sub">Fill in the details below to get started for free.</div>
+
+      <div id="alert-area"></div>
+
+      <form id="reg-form" novalidate>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <div class="input-icon-wrap">
+            <i class="input-icon fas fa-user"></i>
+            <input type="text" class="form-input" id="name" placeholder="John Smith" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <div class="input-icon-wrap">
+            <i class="input-icon fas fa-envelope"></i>
+            <input type="email" class="form-input" id="email" placeholder="you@example.com" required>
+          </div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Password</label>
+          <div class="input-icon-wrap" style="position:relative;">
+            <i class="input-icon fas fa-lock"></i>
+            <input type="password" class="form-input" id="password" placeholder="Min. 6 characters" required oninput="checkStrength(this.value)">
+            <span class="pw-toggle" onclick="togglePw()"><i class="fas fa-eye" id="pw-eye"></i></span>
+          </div>
+          <div class="pw-strength"><div class="pw-strength-bar" id="pw-bar"></div></div>
+          <div class="strength-label" id="pw-label">Enter password</div>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm Password</label>
+          <div class="input-icon-wrap">
+            <i class="input-icon fas fa-lock"></i>
+            <input type="password" class="form-input" id="confirm-pw" placeholder="Repeat your password" required>
+          </div>
+        </div>
+
+        <button type="submit" class="btn btn-primary btn-block btn-lg btn-ripple" id="reg-btn">
+          <i class="fas fa-user-plus"></i> Create Account
+        </button>
+      </form>
+
+      <p style="text-align:center;font-size:0.88rem;color:var(--text-secondary);margin-top:1.25rem;">
+        Already have an account?
+        <a href="login.html" style="color:var(--blue-dark);font-weight:600;">Sign in here</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<div id="toast-container"></div>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/animations.js"></script>
+<script>
+  if (localStorage.getItem('Utoken')) window.location.href = 'dashboard.html';
+
+  function togglePw() {
+    const pw = document.getElementById('password');
+    const eye = document.getElementById('pw-eye');
+    pw.type = pw.type === 'password' ? 'text' : 'password';
+    eye.className = pw.type === 'text' ? 'fas fa-eye-slash' : 'fas fa-eye';
+  }
+
+  function checkStrength(pw) {
+    const bar = document.getElementById('pw-bar');
+    const lbl = document.getElementById('pw-label');
+    let score = 0;
+    if (pw.length >= 6) score++;
+    if (pw.length >= 10) score++;
+    if (/[A-Z]/.test(pw)) score++;
+    if (/[0-9]/.test(pw)) score++;
+    if (/[^a-zA-Z0-9]/.test(pw)) score++;
+    const levels = [
+      { pct: '0%', color: '#ccc', label: 'Enter password' },
+      { pct: '20%', color: '#ff4757', label: 'Very Weak' },
+      { pct: '40%', color: '#ffa502', label: 'Weak' },
+      { pct: '65%', color: '#eccc68', label: 'Fair' },
+      { pct: '80%', color: '#2ed573', label: 'Strong' },
+      { pct: '100%', color: '#1e90ff', label: 'Very Strong' },
+    ];
+    const lvl = levels[score] || levels[0];
+    bar.style.width = lvl.pct;
+    bar.style.background = lvl.color;
+    lbl.textContent = lvl.label;
+    lbl.style.color = lvl.color;
+  }
+
+  document.getElementById('reg-form').addEventListener('submit', async (e) => {
+    e.preventDefault();
+    const name = document.getElementById('name').value.trim();
+    const email = document.getElementById('email').value.trim();
+    const password = document.getElementById('password').value;
+    const confirm = document.getElementById('confirm-pw').value;
+    const alertArea = document.getElementById('alert-area');
+    const btn = document.getElementById('reg-btn');
+
+    if (!name || !email || !password) {
+      alertArea.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> All fields are required.</div>`;
+      return;
+    }
+    if (password.length < 6) {
+      alertArea.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Password must be at least 6 characters.</div>`;
+      return;
+    }
+    if (password !== confirm) {
+      alertArea.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> Passwords do not match.</div>`;
+      return;
+    }
+
+    btn.disabled = true;
+    btn.innerHTML = `<span class="spinner"></span> Creating account...`;
+
+    try {
+      const res = await API.post('/api/auth/register', { name, email, password });
+      const data = await res.json();
+      if (!res.ok || !data.success) throw new Error(data.message || 'Registration failed');
+      localStorage.setItem('Utoken', data.token);
+      localStorage.setItem('user_data', JSON.stringify(data.user));
+      showToast('Account created! Welcome to CyberSentinel Pro!', 'success');
+      setTimeout(() => window.location.href = 'dashboard.html', 1200);
+    } catch (err) {
+      alertArea.innerHTML = `<div class="alert alert-danger"><i class="fas fa-exclamation-circle"></i> ${err.message}</div>`;
+      btn.disabled = false;
+      btn.innerHTML = `<i class="fas fa-user-plus"></i> Create Account`;
+    }
+  });
+
+  // Ripple
+  document.querySelectorAll('.btn-ripple').forEach(btn => {
+    btn.addEventListener('click', function(e) {
+      const ripple = document.createElement('span');
+      ripple.className = 'ripple-wave';
+      const rect = this.getBoundingClientRect();
+      const size = Math.max(rect.width, rect.height);
+      ripple.style.cssText = `width:${size}px;height:${size}px;left:${e.clientX-rect.left-size/2}px;top:${e.clientY-rect.top-size/2}px`;
+      this.appendChild(ripple);
+      setTimeout(() => ripple.remove(), 600);
+    });
+  });
+</script>
+</body>
+</html>

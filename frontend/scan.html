@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Threat Scanner — CyberSentinel Pro</title>
+  <link rel="stylesheet" href="assets/css/main.css">
+  <link rel="stylesheet" href="assets/css/scan.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+</head>
+<body>
+
+<!-- Navigation -->
+<nav class="navbar" id="navbar">
+  <div class="nav-logo">
+    <div class="logo-icon">🛡️</div>
+    <span>CyberSentinel <span style="color:var(--blue)">Pro</span></span>
+  </div>
+  <div class="nav-links">
+    <a href="dashboard.html" class="nav-link">Dashboard</a>
+    <a href="scan.html" class="nav-link active">Scanner</a>
+    <a href="history.html" class="nav-link">History</a>
+  </div>
+  <div class="nav-actions">
+    <span id="user-name-nav" class="text-muted" style="font-size:0.85rem;"></span>
+    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+  </div>
+</nav>
+
+<!-- Loading Overlay -->
+<div id="scan-loading" class="scan-loading-overlay hidden">
+  <div class="scan-ring">
+    <div class="scan-line"></div>
+  </div>
+  <div class="scan-loading-text" id="scan-loading-title">Analyzing...</div>
+  <div class="scan-step-list" id="scan-steps">
+    <div class="scan-step" id="step-1"><span class="step-dot"></span> Running ML analysis</div>
+    <div class="scan-step" id="step-2"><span class="step-dot"></span> Extracting URLs</div>
+    <div class="scan-step" id="step-3"><span class="step-dot"></span> Deep link inspection</div>
+    <div class="scan-step" id="step-4"><span class="step-dot"></span> Checking VirusTotal</div>
+    <div class="scan-step" id="step-5"><span class="step-dot"></span> Generating report</div>
+  </div>
+</div>
+
+<div class="container pt-nav" style="padding-top:90px;">
+  <div style="padding:1.5rem 0 1rem;">
+    <h1 style="font-size:1.75rem;">Threat Scanner</h1>
+    <p class="text-muted">Select a scan type and submit your content for AI-powered analysis.</p>
+  </div>
+
+  <div class="scan-layout">
+    <!-- Sidebar -->
+    <div class="scan-sidebar">
+      <h3>Scan Type</h3>
+      <button class="scan-nav-item active" onclick="switchPanel('sms')" id="nav-sms">
+        <span class="icon">📱</span> SMS Scanner
+      </button>
+      <button class="scan-nav-item" onclick="switchPanel('email-address')" id="nav-email-address">
+        <span class="icon">✉️</span> Email Address
+      </button>
+      <button class="scan-nav-item" onclick="switchPanel('email-body')" id="nav-email-body">
+        <span class="icon">📄</span> Email Body
+      </button>
+      <button class="scan-nav-item" onclick="switchPanel('url')" id="nav-url">
+        <span class="icon">🔗</span> URL / Link
+      </button>
+
+      <div class="section-divider" style="margin:1rem 0;"></div>
+      <h3>Quick Links</h3>
+      <a href="dashboard.html" class="scan-nav-item" style="text-decoration:none;">
+        <span class="icon"><i class="fas fa-chart-bar"></i></span> Dashboard
+      </a>
+      <a href="history.html" class="scan-nav-item" style="text-decoration:none;">
+        <span class="icon"><i class="fas fa-history"></i></span> History
+      </a>
+    </div>
+
+    <!-- Main Area -->
+    <div class="scan-main">
+
+      <!-- ── SMS PANEL ── -->
+      <div class="scan-panel active" id="panel-sms">
+        <div class="panel-header">
+          <h2>📱 SMS Spam Detection</h2>
+          <p>Paste the SMS text below. Our ML model will classify it and inspect any embedded links in real-time.</p>
+        </div>
+        <div class="scan-card">
+          <div class="form-group">
+            <label class="form-label">SMS Message Text</label>
+            <textarea class="form-textarea" id="sms-input" placeholder="Paste the SMS message here e.g. 'WINNER!! You have won a £1000 prize. Call 09061701461 to claim...'" style="min-height:140px;"></textarea>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-label">
+              Deep Link Inspection
+              <small>Crawl any URLs found in the SMS</small>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="sms-inspect" checked>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <button class="btn btn-primary btn-block btn-lg btn-ripple scan-btn" onclick="runScan('sms')">
+            <i class="fas fa-search"></i> Analyze SMS
+          </button>
+        </div>
+        <div id="result-sms" class="hidden"></div>
+      </div>
+
+      <!-- ── EMAIL ADDRESS PANEL ── -->
+      <div class="scan-panel" id="panel-email-address">
+        <div class="panel-header">
+          <h2>✉️ Email Address Validation</h2>
+          <p>Check if an email address is valid, real, or potentially fake. We verify syntax, DNS MX records, domain age and disposable email detection.</p>
+        </div>
+        <div class="scan-card">
+          <div class="form-group">
+            <label class="form-label">Email Address</label>
+            <div class="input-icon-wrap">
+              <i class="input-icon fas fa-envelope"></i>
+              <input type="email" class="form-input" id="email-addr-input" placeholder="suspicious@example.com" style="font-size:1rem;">
+            </div>
+          </div>
+          <button class="btn btn-primary btn-block btn-lg btn-ripple scan-btn" onclick="runScan('email-address')">
+            <i class="fas fa-search"></i> Validate Email Address
+          </button>
+        </div>
+        <div id="result-email-address" class="hidden"></div>
+      </div>
+
+      <!-- ── EMAIL BODY PANEL ── -->
+      <div class="scan-panel" id="panel-email-body">
+        <div class="panel-header">
+          <h2>📄 Email Body Analysis</h2>
+          <p>Paste a suspicious email body. Our SVM classifier detects spam and phishing, then inspects every URL inside.</p>
+        </div>
+        <div class="scan-card">
+          <div class="form-group">
+            <label class="form-label">Email Body Content</label>
+            <textarea class="form-textarea" id="email-body-input" placeholder="Paste the email body content here..." style="min-height:180px;"></textarea>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-label">
+              Inspect Links in Email
+              <small>Crawl all hyperlinks found in the email body</small>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="email-body-inspect" checked>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <button class="btn btn-primary btn-block btn-lg btn-ripple scan-btn" onclick="runScan('email-body')">
+            <i class="fas fa-search"></i> Analyze Email Body
+          </button>
+        </div>
+        <div id="result-email-body" class="hidden"></div>
+      </div>
+
+      <!-- ── URL PANEL ── -->
+      <div class="scan-panel" id="panel-url">
+        <div class="panel-header">
+          <h2>🔗 URL / Link Inspector</h2>
+          <p>Enter any URL for comprehensive analysis: ML phishing detection, live crawl, SSL check, redirect analysis, content inspection, VirusTotal & Google Safe Browsing.</p>
+        </div>
+        <div class="scan-card">
+          <div class="form-group">
+            <label class="form-label">URL to Inspect</label>
+            <div class="input-icon-wrap">
+              <i class="input-icon fas fa-globe"></i>
+              <input type="url" class="form-input" id="url-input" placeholder="https://suspicious-site.com/login?verify=true" style="font-size:0.95rem;">
+            </div>
+          </div>
+          <div class="toggle-row">
+            <div class="toggle-label">
+              Deep Crawl (Recommended)
+              <small>Visit the URL, follow redirects, inspect live content</small>
+            </div>
+            <label class="toggle-switch">
+              <input type="checkbox" id="url-inspect" checked>
+              <span class="toggle-track"></span>
+            </label>
+          </div>
+          <button class="btn btn-primary btn-block btn-lg btn-ripple scan-btn" onclick="runScan('url')">
+            <i class="fas fa-search"></i> Inspect URL
+          </button>
+        </div>
+        <div id="result-url" class="hidden"></div>
+      </div>
+
+    </div><!-- /scan-main -->
+  </div><!-- /scan-layout -->
+</div>
+
+<div id="toast-container"></div>
+<script src="assets/js/auth.js"></script>
+<script src="assets/js/api.js"></script>
+<script src="assets/js/animations.js"></script>
+<script src="assets/js/scan.js"></script>
+</body>
+</html>
