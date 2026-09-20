@@ -19,6 +19,5 @@ python app.py
 The backend server will start at: 👉 http://127.0.0.1:5000
 
 
-
 ADMIN_EMAIL = "admin@cybersentinel.com"
 ADMIN_PASSWORD = "Admin@123456"
