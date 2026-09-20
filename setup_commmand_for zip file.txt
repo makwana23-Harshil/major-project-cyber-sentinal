@@ -1,0 +1,24 @@
+cd path\to\cyber-sentinel
+
+
+Ensure you have Python 3.10+ installed:
+python -m venv venv
+.\venv\Scripts\activate
+
+pip install -r backend/requirements.txt
+
+
+cd backend
+python models/train_models.py
+cd ..
+
+
+cd backend
+python app.py
+
+The backend server will start at: 👉 http://127.0.0.1:5000
+
+
+
+ADMIN_EMAIL = "admin@cybersentinel.com"
+ADMIN_PASSWORD = "Admin@123456"
