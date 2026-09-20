@@ -111,6 +111,11 @@
   border-radius: var(--radius-lg);
   overflow: hidden;
 }
+.result-panel.verdict-danger { border-color: rgba(255,71,87,0.24); }
+.result-panel.verdict-danger .result-header {
+  background: linear-gradient(100deg, rgba(255,71,87,0.09), rgba(255,255,255,0) 72%);
+  border-bottom-color: rgba(255,71,87,0.16);
+}
 
 .result-header {
   padding: 1.5rem 1.75rem;
@@ -132,12 +137,16 @@
   width: 60px; height: 60px;
   border-radius: 50%;
   display: flex; align-items: center; justify-content: center;
-  font-size: 1.6rem;
+  font-size: 0.72rem;
+  font-family: 'Space Grotesk', sans-serif;
+  font-weight: 800;
+  letter-spacing: 0.08em;
   flex-shrink: 0;
 }
 
 .verdict-icon.safe { background: rgba(46,213,115,0.12); animation: none; }
 .verdict-icon.danger { background: rgba(255,71,87,0.12); animation: verdictPulse 1.5s ease-in-out infinite; }
+.verdict-icon.danger { color: var(--danger); border: 1px solid rgba(255,71,87,0.22); }
 .verdict-icon.warning { background: rgba(255,165,2,0.12); }
 
 @keyframes verdictPulse {
@@ -145,8 +154,31 @@
   50% { box-shadow: 0 0 0 12px rgba(255,71,87,0); }
 }
 
-.verdict-text h3 { font-size: 1.2rem; }
-.verdict-text .verdict-sub { font-size: 0.85rem; color: var(--text-secondary); }
+.verdict-text { min-width: 0; }
+.verdict-heading { margin: 0 0 0.45rem; line-height: 1; }
+.verdict-heading .badge {
+  display: inline-block;
+  padding: 0;
+  background: transparent;
+  color: var(--success);
+  font-family: 'Space Grotesk', sans-serif;
+  font-size: clamp(1.35rem, 3vw, 1.85rem);
+  font-weight: 800;
+  letter-spacing: 0.03em;
+}
+.verdict-text .verdict-sub {
+  display: flex;
+  align-items: center;
+  gap: 0.55rem;
+  flex-wrap: wrap;
+  font-size: 0.78rem;
+  color: var(--text-secondary);
+}
+.verdict-sub strong { color: var(--text-primary); font-weight: 700; }
+.verdict-divider { color: var(--text-light); }
+.verdict-icon.danger + .verdict-text .verdict-heading .badge { color: var(--danger); }
+.verdict-icon.danger + .verdict-text .verdict-heading .badge { letter-spacing: 0.05em; }
+.verdict-icon.warning + .verdict-text .verdict-heading .badge { color: var(--warning); }
 
 /* Risk score gauge */
 .risk-section {

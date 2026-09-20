@@ -2,7 +2,7 @@
 from datetime import datetime, timezone
 from flask import Blueprint, request, jsonify, g
 from database import db
-from auth.middleware import token_required
+from auth.middleware import token_required,user_required
 from detection import sms_detector, email_detector, url_detector
 
 detect_bp = Blueprint('detect', __name__, url_prefix='/api/scan')
@@ -64,27 +64,69 @@ def _save_scan(scan_type, input_text, result, user_id=None):
 
     return str(scan_id)
 
-
 @detect_bp.route('/sms', methods=['POST'])
-@token_required
+@user_required
 def scan_sms():
-    data = request.get_json()
-    text = (data.get('text') or '').strip()
-    if not text:
-        return jsonify({'success': False, 'message': 'SMS text is required'}), 400
+
+    # Read JSON body
+    data = request.get_json(silent=True)
+
+    if not isinstance(data, dict):
+        return jsonify({
+            'success': False,
+            'message': 'Invalid request body. JSON object expected.'
+        }), 400
+
+    # Get SMS text
+    input_text = str(data.get('input_text') or '').strip()
+
+    if not input_text:
+        return jsonify({
+            'success': False,
+            'message': 'SMS text is required'
+        }), 400
+
+    # Deep link inspection
     inspect = data.get('inspect_links', True)
+
     try:
-        result = sms_detector.analyze_sms(text, inspect_links=inspect)
-        scan_id = _save_scan('sms', text, result, user_id=g.current_user['_id'])
-        return jsonify({'success': True, 'scan_id': scan_id, 'result': result})
+        # Run SMS detection model
+        result = sms_detector.analyze_sms(
+            input_text,
+            inspect_links=inspect
+        )
+
+        # Save scan for the authenticated user
+        scan_id = _save_scan(
+            'sms',
+            input_text,
+            result,
+            user_id=g.current_user['_id']
+        )
+
+        return jsonify({
+            'success': True,
+            'scan_id': scan_id,
+            'result': result
+        })
+
     except FileNotFoundError as e:
-        return jsonify({'success': False, 'message': str(e)}), 503
+        return jsonify({
+            'success': False,
+            'message': str(e)
+        }), 503
+
     except Exception as e:
-        return jsonify({'success': False, 'message': f'Analysis error: {str(e)}'}), 500
+        print("SMS ANALYSIS ERROR:", repr(e))
+
+        return jsonify({
+            'success': False,
+            'message': f'Analysis error: {str(e)}'
+        }), 500
 
 
 @detect_bp.route('/email-address', methods=['POST'])
-@token_required
+@user_required
 def scan_email_address():
     data = request.get_json()
     email = (data.get('email') or '').strip()
@@ -99,7 +141,7 @@ def scan_email_address():
 
 
 @detect_bp.route('/email-body', methods=['POST'])
-@token_required
+@user_required
 def scan_email_body():
     data = request.get_json()
     body = (data.get('body') or '').strip()
@@ -117,7 +159,7 @@ def scan_email_body():
 
 
 @detect_bp.route('/url', methods=['POST'])
-@token_required
+@user_required
 def scan_url():
     data = request.get_json()
     url = (data.get('url') or '').strip()
@@ -135,7 +177,7 @@ def scan_url():
 
 
 @detect_bp.route('/unified', methods=['POST'])
-@token_required
+@user_required
 def scan_unified():
     """Scan all types at once if fields provided"""
     data = request.get_json()

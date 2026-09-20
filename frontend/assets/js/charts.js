@@ -116,8 +116,8 @@ function renderMultiLine(canvasId, { labels, datasets }) {
       datasets: datasets.map((ds, i) => ({
         label: ds.label,
         data: ds.data,
-        borderColor: colors[i % colors.length],
-        backgroundColor: `${colors[i % colors.length]}12`,
+        borderColor: ds.color || colors[i % colors.length],
+        backgroundColor: `${ds.color || colors[i % colors.length]}12`,
         borderWidth: 2,
         pointRadius: 3,
         fill: false,
@@ -136,6 +136,46 @@ function renderMultiLine(canvasId, { labels, datasets }) {
         y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { stepSize: 1, font: { size: 10 } } }
       },
       animation: { duration: 1000 }
+    }
+  });
+}
+
+// ── Grouped Multi-bar Chart ──
+function renderMultiBar(canvasId, { labels, datasets }) {
+  destroyChart(canvasId);
+  const ctx = document.getElementById(canvasId);
+  if (!ctx) return;
+  const colors = ['#00D4FF', '#7B5EA7', '#FFA502', '#FF4757', '#2ED573'];
+  activeCharts[canvasId] = new Chart(ctx, {
+    type: 'bar',
+    data: {
+      labels,
+      datasets: datasets.map((ds, i) => {
+        const color = ds.color || colors[i % colors.length];
+        return {
+          label: ds.label,
+          data: ds.data,
+          backgroundColor: `${color}CC`,
+          borderColor: color,
+          borderWidth: 1,
+          borderRadius: 4,
+          borderSkipped: false,
+          maxBarThickness: 18
+        };
+      })
+    },
+    options: {
+      responsive: true,
+      maintainAspectRatio: false,
+      plugins: {
+        legend: { position: 'top', labels: { usePointStyle: true, font: { size: 11 } } },
+        tooltip: { mode: 'index', intersect: false }
+      },
+      scales: {
+        x: { grid: { display: false }, ticks: { maxTicksLimit: 10, font: { size: 10 } } },
+        y: { beginAtZero: true, grid: { color: 'rgba(0,0,0,0.04)' }, ticks: { stepSize: 1, font: { size: 10 } } }
+      },
+      animation: { duration: 900, easing: 'easeInOutQuart' }
     }
   });
 }

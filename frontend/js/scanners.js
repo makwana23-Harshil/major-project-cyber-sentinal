@@ -223,16 +223,16 @@ const Scanners = {
     const isSuspicious = data.prediction.includes('Suspicious');
     
     let bannerClass = 'verdict-safe';
-    let icon = '🛡️ REAL / SAFE';
+    let icon = 'REAL / SAFE';
     let scoreColor = 'var(--color-safe)';
 
     if (isSuspicious) {
       bannerClass = 'verdict-suspicious';
-      icon = '⚠️ SUSPICIOUS';
+      icon = 'SUSPICIOUS';
       scoreColor = 'var(--color-suspicious)';
     } else if (!isSafe) {
       bannerClass = 'verdict-malicious';
-      icon = '🚨 FAKE / MALICIOUS';
+      icon = 'FAKE / MALICIOUS';
       scoreColor = 'var(--color-malicious)';
     }
 
@@ -244,12 +244,12 @@ const Scanners = {
       indicatorsHtml = `
         <div class="indicators-panel">
           <div style="font-weight: 700; font-size: 0.95rem; margin-bottom: 12px; display: flex; align-items: center; gap: 8px;">
-            <span>🔍 Detected Threat Indicators</span>
+            <span>Detected Threat Indicators</span>
             <span class="risk-tag risk-tag-high">${data.indicators.length} Signals</span>
           </div>
           ${data.indicators.map(ind => `
             <div class="indicator-item">
-              <span class="indicator-icon">${isSafe ? '✅' : '⚠'}</span>
+              <span class="indicator-icon">${isSafe ? 'SAFE' : 'WARNING'}</span>
               <div>${ind}</div>
             </div>
           `).join('')}
@@ -259,7 +259,7 @@ const Scanners = {
       indicatorsHtml = `
         <div class="indicators-panel">
           <div style="display: flex; align-items: center; gap: 10px; color: var(--color-safe);">
-            <span style="font-size: 1.2rem;">✅</span>
+            <span style="font-size: 0.85rem;font-weight:700;">SAFE</span>
             <span style="font-weight: 600;">No malicious triggers or social engineering indicators found.</span>
           </div>
         </div>
@@ -272,7 +272,7 @@ const Scanners = {
       xaiHtml = `
         <div style="margin-top: 20px;">
           <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px;">
-            <div style="font-weight: 700; font-size: 0.9rem;">🧠 Explainable AI: Highlighted Threat Tokens</div>
+            <div style="font-weight: 700; font-size: 0.9rem;">Explainable AI: Highlighted Threat Tokens</div>
             <span style="font-size: 0.75rem; color: var(--text-dim);">Hover over tokens for risk attribution</span>
           </div>
           <div class="xai-preview-box">${data.xai_data.highlighted_html}</div>
@@ -285,7 +285,7 @@ const Scanners = {
     if (data.xai_data?.feature_table) {
       featureTableHtml = `
         <div style="margin-top: 24px;">
-          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px;">📊 URL Deep Feature Diagnostics (30+ Attributes)</h4>
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 12px;">URL Deep Feature Diagnostics (30+ Attributes)</h4>
           <div style="overflow-x: auto; border: 1px solid var(--border-color); border-radius: var(--radius-md);">
             <table class="feature-table">
               <thead>
@@ -318,7 +318,7 @@ const Scanners = {
     if (data.xai_data?.embedded_urls_analysis && data.xai_data.embedded_urls_analysis.length > 0) {
       nestedUrlsHtml = `
         <div style="margin-top: 20px;">
-          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 10px;">🔗 Embedded Links Deep Scan</h4>
+          <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 10px;">Embedded Links Deep Scan</h4>
           <div style="display: flex; flex-direction: column; gap: 8px;">
             ${data.xai_data.embedded_urls_analysis.map(u => `
               <div style="background: var(--bg-surface); border: 1px solid var(--border-color); padding: 12px; border-radius: var(--radius-sm); display: flex; justify-content: space-between; align-items: center;">

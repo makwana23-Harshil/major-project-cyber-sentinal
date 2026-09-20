@@ -80,7 +80,6 @@ def _seed_admin(app):
         db.users.insert_one(admin_user)
         print(f"[CyberSentinel] Admin seeded: {app.config['ADMIN_EMAIL']}")
 
-
 if __name__ == '__main__':
     # Train models if not present
     models_dir = os.path.join(os.path.dirname(__file__), 'models')
@@ -99,4 +98,6 @@ if __name__ == '__main__':
     print("  http://127.0.0.1:5000")
     print("  Admin: admin@cybersentinel.com / Admin@2024")
     print("="*55 + "\n")
-    application.run(debug=True, host='0.0.0.0', port=5000)
+    
+    # Run the application with the reloader disabled to prevent socket crashes
+    application.run(host='0.0.0.0', port=5000, debug=True, use_reloader=False)

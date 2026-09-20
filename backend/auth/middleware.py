@@ -1,11 +1,10 @@
 import jwt
 import bcrypt
-from functools import wraps
 from flask import request, jsonify, current_app, g
 from database import db
 from datetime import datetime, timezone
 from bson import ObjectId
-
+from functools import wraps
 
 def hash_password(password: str) -> str:
     return bcrypt.hashpw(password.encode('utf-8'), bcrypt.gensalt()).decode('utf-8')
@@ -95,4 +94,102 @@ def admin_required(f):
             return jsonify({'success': False, 'message': 'Invalid token format'}), 401
             
         return f(*args, **kwargs)
+    return decorated
+
+def user_required(f):
+    """Requires a valid JWT belonging to a normal user."""
+
+    @wraps(f)
+    def decorated(*args, **kwargs):
+
+        # 1. Get Authorization header
+        auth_header = request.headers.get('Authorization', '')
+
+        if not auth_header.startswith('Bearer '):
+            return jsonify({
+                'success': False,
+                'message': 'Authentication required'
+            }), 401
+
+        # 2. Extract JWT
+        token = auth_header.split(' ', 1)[1].strip()
+
+        if not token:
+            return jsonify({
+                'success': False,
+                'message': 'Invalid token'
+            }), 401
+
+        # 3. Decode JWT
+        try:
+            token_data = decode_token(token)
+
+        except jwt.ExpiredSignatureError:
+            return jsonify({
+                'success': False,
+                'message': 'Token has expired'
+            }), 401
+
+        except jwt.InvalidTokenError:
+            return jsonify({
+                'success': False,
+                'message': 'Invalid token'
+            }), 401
+
+        except Exception:
+            return jsonify({
+                'success': False,
+                'message': 'Invalid token format'
+            }), 401
+
+        # 4. Token must belong to a normal user
+        if token_data.get('role') != 'user':
+            return jsonify({
+                'success': False,
+                'message': 'User authentication required'
+            }), 403
+
+        # 5. Get user ID FROM JWT
+        user_id = token_data.get('user_id')
+
+        if not user_id:
+            return jsonify({
+                'success': False,
+                'message': 'Invalid token payload'
+            }), 401
+
+        # 6. Find user in MongoDB
+        try:
+            user = db.users.find_one({
+                '_id': ObjectId(user_id)
+            })
+
+        except Exception:
+            return jsonify({
+                'success': False,
+                'message': 'Invalid user ID'
+            }), 401
+
+        # 7. User must exist
+        if not user:
+            return jsonify({
+                'success': False,
+                'message': 'User account not found'
+            }), 401
+
+        # 8. User must be active
+        if not user.get('is_active', True):
+            return jsonify({
+                'success': False,
+                'message': 'Your account has been deactivated'
+            }), 403
+
+        # 9. Store authenticated information
+        g.user_id = user_id
+        g.current_user = user
+        g.current_role = 'user'
+
+        # 10. Continue to protected route
+        return f(*args, **kwargs)
+
     return decorated

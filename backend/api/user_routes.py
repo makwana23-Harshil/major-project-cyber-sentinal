@@ -7,12 +7,45 @@ from datetime import datetime, timedelta, timezone
 user_bp = Blueprint('user', __name__, url_prefix='/api/user')
 
 def serialize_scan(scan):
-    """Helper to convert MongoDB _id to string for JSON"""
-    if scan and '_id' in scan:
+    """Helper to convert MongoDB scan document for JSON response."""
+    if not scan:
+        return None
+
+    # Make a copy so we don't modify the MongoDB document directly
+    scan = dict(scan)
+
+    # Convert MongoDB _id to string
+    if '_id' in scan:
         scan['id'] = str(scan['_id'])
         del scan['_id']
-    if scan and 'user_id' in scan and scan['user_id']:
+
+    # Convert user_id to string
+    if scan.get('user_id'):
         scan['user_id'] = str(scan['user_id'])
+
+    # ---------------------------------------------------------
+    # Calculate number of links found in the scan
+    # ---------------------------------------------------------
+    link_count = 0
+
+    details = scan.get('details') or {}
+
+    # If the scan already contains extracted URLs
+    extracted_urls = details.get('extracted_urls')
+
+    if isinstance(extracted_urls, list):
+        link_count = len(extracted_urls)
+
+    # If link inspections are available
+    elif isinstance(details.get('link_inspections'), list):
+        link_count = len(details['link_inspections'])
+
+    # If link_count already exists in the database
+    elif isinstance(scan.get('link_count'), int):
+        link_count = scan['link_count']
+
+    scan['link_count'] = link_count
+
     return scan
 
 def serialize_user(user):

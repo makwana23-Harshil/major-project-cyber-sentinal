@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,409 +10,503 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
   <style>
-    .admin-tag { background: rgba(255,165,2,0.12); color: #b36b00; font-size:0.72rem; font-weight:700; padding:2px 8px; border-radius:100px; }
-    .user-actions { display:flex; gap:6px; }
+    .admin-tag {
+      background: rgba(255, 165, 2, 0.12);
+      color: #b36b00;
+      font-size: 0.72rem;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 100px;
+    }
+
+    .user-actions {
+      display: flex;
+      gap: 6px;
+    }
   </style>
 </head>
+
 <body>
 
-<!-- Navbar -->
-<nav class="navbar" id="navbar">
-  <div class="nav-logo">
-    <div class="logo-icon">🛡️</div>
-    <span>CyberSentinel <span style="color:var(--blue)">Pro</span> <span class="admin-tag">ADMIN</span></span>
-  </div>
-  <div class="nav-actions">
-    <span id="user-name-nav" class="text-muted" style="font-size:0.85rem;"></span>
-    <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
-  </div>
-</nav>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+      <span>CyberSentinel <span style="color:var(--blue)">Pro</span> <span class="admin-tag">ADMIN</span></span>
+    </div>
+    <div class="nav-actions">
+      <span id="user-name-nav" class="text-muted" style="font-size:0.85rem;"></span>
+      <button class="btn btn-outline btn-sm" onclick="logout()"><i class="fas fa-sign-out-alt"></i> Logout</button>
+    </div>
+  </nav>
 
-<div class="container pt-nav" style="padding-top:90px;">
-  <div style="padding:1.5rem 0 1rem;">
-    <h1 style="font-size:1.75rem;">Admin Dashboard</h1>
-    <p class="text-muted">Platform-wide analytics, user management, and threat monitoring.</p>
-  </div>
-
-  <div class="dash-layout">
-    <!-- Sidebar -->
-    <div class="dash-sidebar">
-      <div class="user-info">
-        <div class="user-avatar" style="background:linear-gradient(135deg,#ffa502,#ff4757);" id="avatar-initials">A</div>
-        <div>
-          <div class="name" id="sidebar-name">Admin</div>
-          <div class="role" style="color:rgba(255,165,2,0.8);">Administrator</div>
-        </div>
-      </div>
-      <button class="sidebar-link active" onclick="showSection('overview')"><span class="si"><i class="fas fa-chart-pie"></i></span>Overview</button>
-      <button class="sidebar-link" onclick="showSection('users')"><span class="si"><i class="fas fa-users"></i></span>User Management</button>
-      <button class="sidebar-link" onclick="showSection('scans')"><span class="si"><i class="fas fa-list"></i></span>All Scans</button>
-      <button class="sidebar-link" onclick="showSection('analytics')"><span class="si"><i class="fas fa-chart-bar"></i></span>Analytics</button>
-      <div class="sidebar-logout">
-        <button class="sidebar-link" style="background:rgba(255,71,87,0.1);color:#ff7a86;border:none;width:100%;text-align:left;" onclick="logout()">
-          <span class="si"><i class="fas fa-sign-out-alt"></i></span>Logout
-        </button>
-      </div>
+  <div class="container pt-nav" style="padding-top:90px;">
+    <div style="padding:1.5rem 0 1rem;">
+      <h1 style="font-size:1.75rem;">Admin Dashboard</h1>
+      <p class="text-muted">Platform-wide analytics, user management, and threat monitoring.</p>
     </div>
 
-    <!-- Main -->
-    <div class="dash-main" id="admin-main">
-
-      <!-- ── OVERVIEW SECTION ── -->
-      <div id="section-overview">
-        <!-- Stats -->
-        <div class="grid-4 mb-3">
-          <div class="stat-card reveal">
-            <div class="stat-icon blue"><i class="fas fa-users" style="color:var(--blue)"></i></div>
-            <div><div class="stat-value" id="stat-users">—</div><div class="stat-label">Total Users</div></div>
+    <div class="dash-layout">
+      <!-- Sidebar -->
+      <div class="dash-sidebar">
+        <div class="user-info">
+          <div class="user-avatar" style="background:linear-gradient(135deg,#ffa502,#ff4757);" id="avatar-initials">A
           </div>
-          <div class="stat-card reveal reveal-delay-1">
-            <div class="stat-icon green"><i class="fas fa-search" style="color:var(--success)"></i></div>
-            <div><div class="stat-value" id="stat-total-scans">—</div><div class="stat-label">Total Scans</div></div>
-          </div>
-          <div class="stat-card reveal reveal-delay-2">
-            <div class="stat-icon orange"><i class="fas fa-calendar-day" style="color:var(--warning)"></i></div>
-            <div><div class="stat-value" id="stat-today">—</div><div class="stat-label">Scans Today</div></div>
-          </div>
-          <div class="stat-card reveal reveal-delay-3">
-            <div class="stat-icon red"><i class="fas fa-shield-virus" style="color:var(--danger)"></i></div>
-            <div><div class="stat-value" id="stat-threats-today">—</div><div class="stat-label">Threats Today</div></div>
+          <div>
+            <div class="name" id="sidebar-name">Admin</div>
+            <div class="role" style="color:rgba(255,165,2,0.8);">Administrator</div>
           </div>
         </div>
+        <button class="sidebar-link active" onclick="showSection('overview')"><span class="si"><i
+              class="fas fa-chart-pie"></i></span>Overview</button>
+        <button class="sidebar-link" onclick="showSection('users')"><span class="si"><i
+              class="fas fa-users"></i></span>User Management</button>
+        <button class="sidebar-link" onclick="showSection('scans')"><span class="si"><i
+              class="fas fa-list"></i></span>All Scans</button>
+        <button class="sidebar-link" onclick="showSection('analytics')"><span class="si"><i
+              class="fas fa-chart-bar"></i></span>Analytics</button>
+        <div class="sidebar-logout">
+          <button class="sidebar-link"
+            style="background:rgba(255,71,87,0.1);color:#ff7a86;border:none;width:100%;text-align:left;"
+            onclick="logout()">
+            <span class="si"><i class="fas fa-sign-out-alt"></i></span>Logout
+          </button>
+        </div>
+      </div>
 
-        <!-- Charts Row 1 -->
-        <div class="grid-2 mb-3">
+      <!-- Main -->
+      <div class="dash-main" id="admin-main">
+
+        <!-- ── OVERVIEW SECTION ── -->
+        <div id="section-overview">
+          <!-- Stats -->
+          <div class="grid-4 mb-3">
+            <div class="stat-card reveal">
+              <div class="stat-icon blue"><i class="fas fa-users" style="color:var(--blue)"></i></div>
+              <div>
+                <div class="stat-value" id="stat-users">—</div>
+                <div class="stat-label">Total Users</div>
+              </div>
+            </div>
+            <div class="stat-card reveal reveal-delay-1">
+              <div class="stat-icon green"><i class="fas fa-search" style="color:var(--success)"></i></div>
+              <div>
+                <div class="stat-value" id="stat-total-scans">—</div>
+                <div class="stat-label">Total Scans</div>
+              </div>
+            </div>
+            <div class="stat-card reveal reveal-delay-2">
+              <div class="stat-icon orange"><i class="fas fa-calendar-day" style="color:var(--warning)"></i></div>
+              <div>
+                <div class="stat-value" id="stat-today">—</div>
+                <div class="stat-label">Scans Today</div>
+              </div>
+            </div>
+            <div class="stat-card reveal reveal-delay-3">
+              <div class="stat-icon red"><i class="fas fa-shield-virus" style="color:var(--danger)"></i></div>
+              <div>
+                <div class="stat-value" id="stat-threats-today">—</div>
+                <div class="stat-label">Threats Today</div>
+              </div>
+            </div>
+          </div>
+
+          <!-- Charts Row 1 -->
+          <div class="grid-2 mb-3">
+            <div class="chart-card reveal">
+              <div class="chart-title">Global Threat Distribution</div>
+              <div class="chart-wrap"><canvas id="chart-global-verdicts"></canvas></div>
+            </div>
+            <div class="chart-card reveal reveal-delay-1">
+              <div class="chart-title">Scan Type Distribution</div>
+              <div class="chart-wrap"><canvas id="chart-global-types"></canvas></div>
+            </div>
+          </div>
+
+          <!-- Charts Row 2 -->
+          <div class="chart-card mb-3 reveal">
+            <div class="chart-title">Platform Activity — Last 30 Days</div>
+            <div class="chart-wrap tall"><canvas id="chart-global-activity"></canvas></div>
+          </div>
+
+          <!-- Charts Row 3 -->
+          <div class="grid-2 mb-3">
+            <div class="chart-card reveal">
+              <div class="chart-title">Scan Activity by Hour (Last 7 Days)</div>
+              <div class="chart-wrap"><canvas id="chart-hourly"></canvas></div>
+            </div>
+            <div class="chart-card reveal reveal-delay-1">
+              <div class="chart-title">Top 5 Users by Scan Count</div>
+              <div class="chart-wrap"><canvas id="chart-top-users"></canvas></div>
+            </div>
+          </div>
+
+          <!-- Top flagged domains -->
+          <div class="chart-card mb-3 reveal">
+            <div class="chart-title" style="margin-bottom:1rem;">Top Flagged Domains</div>
+            <div id="flagged-domains-list">
+              <div class="empty-state">
+                <p>Loading...</p>
+              </div>
+            </div>
+          </div>
+
+          <!-- Recent scans -->
           <div class="chart-card reveal">
-            <div class="chart-title">Global Threat Distribution</div>
-            <div class="chart-wrap"><canvas id="chart-global-verdicts"></canvas></div>
-          </div>
-          <div class="chart-card reveal reveal-delay-1">
-            <div class="chart-title">Scan Type Distribution</div>
-            <div class="chart-wrap"><canvas id="chart-global-types"></canvas></div>
-          </div>
-        </div>
-
-        <!-- Charts Row 2 -->
-        <div class="chart-card mb-3 reveal">
-          <div class="chart-title">Platform Activity — Last 30 Days</div>
-          <div class="chart-wrap tall"><canvas id="chart-global-activity"></canvas></div>
-        </div>
-
-        <!-- Charts Row 3 -->
-        <div class="grid-2 mb-3">
-          <div class="chart-card reveal">
-            <div class="chart-title">Scan Activity by Hour (Last 7 Days)</div>
-            <div class="chart-wrap"><canvas id="chart-hourly"></canvas></div>
-          </div>
-          <div class="chart-card reveal reveal-delay-1">
-            <div class="chart-title">Top 5 Users by Scan Count</div>
-            <div class="chart-wrap"><canvas id="chart-top-users"></canvas></div>
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+              <div class="chart-title" style="margin-bottom:0;">Recent Platform Scans</div>
+              <button class="btn btn-outline btn-sm" onclick="showSection('scans')">View All</button>
+            </div>
+            <div class="table-wrap" id="admin-recent-table">
+              <div class="empty-state">
+                <p>Loading...</p>
+              </div>
+            </div>
           </div>
         </div>
 
-        <!-- Top flagged domains -->
-        <div class="chart-card mb-3 reveal">
-          <div class="chart-title" style="margin-bottom:1rem;">Top Flagged Domains</div>
-          <div id="flagged-domains-list">
-            <div class="empty-state"><p>Loading...</p></div>
-          </div>
-        </div>
-
-        <!-- Recent scans -->
-        <div class="chart-card reveal">
-          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-            <div class="chart-title" style="margin-bottom:0;">Recent Platform Scans</div>
-            <button class="btn btn-outline btn-sm" onclick="showSection('scans')">View All</button>
-          </div>
-          <div class="table-wrap" id="admin-recent-table">
-            <div class="empty-state"><p>Loading...</p></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── USERS SECTION ── -->
-      <div id="section-users" class="hidden">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-          <h2 style="font-size:1.25rem;">User Management</h2>
-          <button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i> Refresh</button>
-        </div>
-        <div class="chart-card">
-          <div class="table-wrap" id="users-table">
-            <div class="empty-state"><p>Loading users...</p></div>
-          </div>
-        </div>
-      </div>
-
-      <!-- ── ALL SCANS SECTION ── -->
-      <div id="section-scans" class="hidden">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
-          <h2 style="font-size:1.25rem;">All Platform Scans</h2>
-          <button class="btn btn-outline btn-sm" onclick="loadScans()"><i class="fas fa-sync"></i> Refresh</button>
-        </div>
-        <div class="chart-card">
-          <div class="table-wrap" id="all-scans-table">
-            <div class="empty-state"><p>Loading scans...</p></div>
-          </div>
-          <div id="scans-pagination" style="display:flex;justify-content:center;gap:8px;padding:1rem;"></div>
-        </div>
-      </div>
-
-      <!-- ── ANALYTICS SECTION ── -->
-      <div id="section-analytics" class="hidden">
-        <h2 style="font-size:1.25rem;margin-bottom:1.25rem;">Deep Analytics</h2>
-        <div class="grid-2 mb-3">
-          <div class="chart-card">
-            <div class="chart-title">Threats vs Safe Scans (30 Days)</div>
-            <div class="chart-wrap tall"><canvas id="chart-analytics-compare"></canvas></div>
+        <!-- ── USERS SECTION ── -->
+        <div id="section-users" class="hidden">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+            <h2 style="font-size:1.25rem;">User Management</h2>
+            <button class="btn btn-outline btn-sm" onclick="loadUsers()"><i class="fas fa-sync"></i> Refresh</button>
           </div>
           <div class="chart-card">
-            <div class="chart-title">Scan Types Trend</div>
-            <div class="chart-wrap tall"><canvas id="chart-analytics-types"></canvas></div>
+            <div class="table-wrap" id="users-table">
+              <div class="empty-state">
+                <p>Loading users...</p>
+              </div>
+            </div>
           </div>
         </div>
-      </div>
 
-    </div><!-- /dash-main -->
+        <!-- ── ALL SCANS SECTION ── -->
+        <div id="section-scans" class="hidden">
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1.25rem;">
+            <h2 style="font-size:1.25rem;">All Platform Scans</h2>
+            <button class="btn btn-outline btn-sm" onclick="loadScans()"><i class="fas fa-sync"></i> Refresh</button>
+          </div>
+          <div class="chart-card">
+            <div class="table-wrap" id="all-scans-table">
+              <div class="empty-state">
+                <p>Loading scans...</p>
+              </div>
+            </div>
+            <div id="scans-pagination" style="display:flex;justify-content:center;gap:8px;padding:1rem;"></div>
+          </div>
+        </div>
+
+        <!-- ── ANALYTICS SECTION ── -->
+        <div id="section-analytics" class="hidden">
+          <h2 style="font-size:1.25rem;margin-bottom:1.25rem;">Deep Analytics</h2>
+          <div class="grid-2 mb-3">
+            <div class="chart-card">
+              <div class="chart-title">Threats vs Safe Scans (30 Days)</div>
+              <div class="chart-wrap tall"><canvas id="chart-analytics-compare"></canvas></div>
+            </div>
+            <div class="chart-card">
+              <div class="chart-title">Scan Types Trend</div>
+              <div class="chart-wrap tall"><canvas id="chart-analytics-types"></canvas></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /dash-main -->
+    </div>
   </div>
-</div>
 
-<div id="toast-container"></div>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/animations.js"></script>
-<script src="assets/js/charts.js"></script>
-<script>
-  if (!requireAdmin()) { /* redirected */ }
-  else initAdmin();
+  <div id="toast-container"></div>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script>
+    if (!requireAdmin()) { /* redirected */ }
+    else initAdmin();
 
-  let globalStats = null;
-  let currentScansPage = 1;
+    let globalStats = null;
+    let currentScansPage = 1;
 
-  async function initAdmin() {
-    const user = getUserData();
-    if (user.name) {
-      document.getElementById('sidebar-name').textContent = user.name;
-      document.getElementById('user-name-nav').textContent = `Admin: ${user.name.split(' ')[0]}`;
-      document.getElementById('avatar-initials').textContent = user.name[0].toUpperCase();
-    }
-    await loadOverview();
-  }
-
-  function showSection(name) {
-    ['overview','users','scans','analytics'].forEach(s => {
-      document.getElementById('section-' + s).classList.toggle('hidden', s !== name);
-    });
-    document.querySelectorAll('.sidebar-link').forEach((btn, i) => {
-      btn.classList.remove('active');
-      if (['overview','users','scans','analytics'][i] === name) btn.classList.add('active');
-    });
-    if (name === 'users') loadUsers();
-    if (name === 'scans') loadScans(1);
-    if (name === 'analytics') renderAnalytics();
-  }
-
-  async function loadOverview() {
-    try {
-      const [dashRes, statsRes] = await Promise.all([
-        API.get('/api/admin/dashboard'),
-        API.get('/api/admin/stats')
-      ]);
-      const dash = await dashRes.json();
-      const stats = await statsRes.json();
-      if (dash.success && stats.success) {
-        globalStats = stats.stats;
-        renderOverview(dash.dashboard, stats.stats);
+    async function initAdmin() {
+      const user = getUserData();
+      if (user.name) {
+        document.getElementById('sidebar-name').textContent = user.name;
+        document.getElementById('user-name-nav').textContent = `Admin: ${user.name.split(' ')[0]}`;
+        document.getElementById('avatar-initials').textContent = user.name[0].toUpperCase();
       }
-    } catch (e) {
-      showToast('Cannot connect to backend server', 'error');
+      await loadOverview();
     }
-  }
 
-  function renderOverview(dash, stats) {
-    document.getElementById('stat-users').textContent = dash.total_users || 0;
-    document.getElementById('stat-total-scans').textContent = dash.total_scans || 0;
-    document.getElementById('stat-today').textContent = stats.scans_today || 0;
-    document.getElementById('stat-threats-today').textContent = stats.threats_blocked_today || 0;
-
-    // Verdict donut
-    const vd = stats.verdict_distribution || {};
-    const dangerCount = (vd.DANGEROUS||0) + (vd.PHISHING||0) + (vd.SPAM||0) + (vd.FAKE||0);
-    const warnCount = (vd.SUSPICIOUS||0);
-    const safeCount = (vd.SAFE||0) + (vd.LEGITIMATE||0) + (vd.HAM||0) + (vd.VALID||0);
-    renderDonut('chart-global-verdicts', {
-      labels: ['Dangerous/Spam', 'Suspicious', 'Safe/Legitimate'],
-      data: [dangerCount, warnCount, safeCount],
-      colors: ['#FF4757', '#FFA502', '#2ED573']
-    });
-
-    // Type donut
-    const td = stats.type_distribution || {};
-    renderDonut('chart-global-types', {
-      labels: ['SMS', 'Email Address', 'Email Body', 'URL'],
-      data: [td.sms||0, td.email_address||0, td.email_body||0, td.url||0],
-      colors: ['#00D4FF', '#7B5EA7', '#FFA502', '#FF4757']
-    });
-
-    // Activity line
-    const daily = stats.daily_activity || {};
-    const last30 = [];
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      const key = d.toISOString().split('T')[0];
-      last30.push({ label: d.toLocaleDateString('en',{month:'short',day:'numeric'}), val: daily[key]||0 });
+    function showSection(name) {
+      ['overview', 'users', 'scans', 'analytics'].forEach(s => {
+        document.getElementById('section-' + s).classList.toggle('hidden', s !== name);
+      });
+      document.querySelectorAll('.sidebar-link').forEach((btn, i) => {
+        btn.classList.remove('active');
+        if (['overview', 'users', 'scans', 'analytics'][i] === name) btn.classList.add('active');
+      });
+      if (name === 'users') loadUsers();
+      if (name === 'scans') loadScans(1);
+      if (name === 'analytics') renderAnalytics();
     }
-    renderLine('chart-global-activity', { labels: last30.map(x=>x.label), data: last30.map(x=>x.val), label: 'Platform Scans' });
 
-    // Hourly
-    renderHourlyBar('chart-hourly', stats.hourly_activity || {});
+    async function loadOverview() {
+      try {
+        const [dashRes, statsRes] = await Promise.all([
+          API.get('/api/admin/dashboard'),
+          API.get('/api/admin/stats')
+        ]);
+        const dash = await dashRes.json();
+        const stats = await statsRes.json();
+        if (dash.success && stats.success) {
+          globalStats = stats.stats;
+          renderOverview(dash.dashboard, stats.stats);
+        }
+      } catch (e) {
+        showToast('Cannot connect to backend server', 'error');
+      }
+    }
 
-    // Top users bar
-    const topUsers = stats.top_users || [];
-    renderBar('chart-top-users', {
-      labels: topUsers.map(u => u.name.split(' ')[0]),
-      data: topUsers.map(u => u.scans),
-      label: 'Scans',
-      color: ['#00D4FF','#7B5EA7','#FFA502','#FF4757','#2ED573']
-    });
+    function renderOverview(dash, stats) {
+      document.getElementById('stat-users').textContent = dash.total_users || 0;
+      document.getElementById('stat-total-scans').textContent = dash.total_scans || 0;
+      document.getElementById('stat-today').textContent = stats.scans_today || 0;
+      document.getElementById('stat-threats-today').textContent = stats.threats_blocked_today || 0;
 
-    // Flagged domains
-    const domains = stats.top_flagged_domains || [];
-    const domEl = document.getElementById('flagged-domains-list');
-    if (domains.length) {
-      domEl.innerHTML = domains.map((d, i) => `
+      // Verdict donut
+      const vd = stats.verdict_distribution || {};
+      const dangerCount = (vd.DANGEROUS || 0) + (vd.PHISHING || 0) + (vd.SPAM || 0) + (vd.FAKE || 0);
+      const warnCount = (vd.SUSPICIOUS || 0);
+      const safeCount = (vd.SAFE || 0) + (vd.LEGITIMATE || 0) + (vd.HAM || 0) + (vd.VALID || 0);
+      renderDonut('chart-global-verdicts', {
+        labels: ['Dangerous/Spam', 'Suspicious', 'Safe/Legitimate'],
+        data: [dangerCount, warnCount, safeCount],
+        colors: ['#FF4757', '#FFA502', '#2ED573']
+      });
+
+      // Type donut
+      const td = stats.type_distribution || {};
+      renderDonut('chart-global-types', {
+        labels: ['SMS', 'Email Address', 'Email Body', 'URL'],
+        data: [td.sms || 0, td.email_address || 0, td.email_body || 0, td.url || 0],
+        colors: ['#00D4FF', '#7B5EA7', '#FFA502', '#FF4757']
+      });
+
+      // Activity line
+      const daily = stats.daily_activity || {};
+      const last30 = [];
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        last30.push({ label: d.toLocaleDateString('en', { month: 'short', day: 'numeric' }), val: daily[key] || 0 });
+      }
+      renderLine('chart-global-activity', { labels: last30.map(x => x.label), data: last30.map(x => x.val), label: 'Platform Scans' });
+
+      // Hourly
+      renderHourlyBar('chart-hourly', stats.hourly_activity || {});
+
+      // Top users bar
+      const topUsers = stats.top_users || [];
+      renderBar('chart-top-users', {
+        labels: topUsers.map(u => u.name.split(' ')[0]),
+        data: topUsers.map(u => u.scans),
+        label: 'Scans',
+        color: ['#00D4FF', '#7B5EA7', '#FFA502', '#FF4757', '#2ED573']
+      });
+
+      // Flagged domains
+      const domains = stats.top_flagged_domains || [];
+      const domEl = document.getElementById('flagged-domains-list');
+      if (domains.length) {
+        domEl.innerHTML = domains.map((d, i) => `
         <div class="evidence-item" style="justify-content:space-between;">
-          <span style="font-family:monospace;font-size:0.82rem;">${i+1}. ${d.url.slice(0,60)}${d.url.length>60?'...':''}</span>
-          <span class="badge badge-dangerous">${d.count} flag${d.count>1?'s':''}</span>
+          <span style="font-family:monospace;font-size:0.82rem;">${i + 1}. ${d.url.slice(0, 60)}${d.url.length > 60 ? '...' : ''}</span>
+          <span class="badge badge-dangerous">${d.count} flag${d.count > 1 ? 's' : ''}</span>
         </div>`).join('');
-    } else {
-      domEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎉</div><p>No flagged domains yet</p></div>`;
+      } else {
+        domEl.innerHTML = `<div class="empty-state"><div class="empty-icon">🎉</div><p>No flagged domains yet</p></div>`;
+      }
+
+      // Recent scans
+      renderAdminRecentTable(dash.recent_scans || []);
     }
 
-    // Recent scans
-    renderAdminRecentTable(dash.recent_scans || []);
-  }
-
-  function renderAdminRecentTable(scans) {
-    const wrap = document.getElementById('admin-recent-table');
-    if (!scans.length) { wrap.innerHTML = `<div class="empty-state"><p>No scans yet</p></div>`; return; }
-    const iconMap = { sms:'📱', email_address:'✉️', email_body:'📄', url:'🔗' };
-    const rows = scans.map(s => {
-      const v = s.verdict||'';
-      const cls = ['DANGEROUS','PHISHING','SPAM'].includes(v)?'badge-dangerous':v==='SUSPICIOUS'?'badge-suspicious':'badge-safe';
-      const date = new Date(s.created_at).toLocaleDateString('en',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-      return `<tr><td>${iconMap[s.scan_type]||'🔍'} ${s.scan_type.replace('_',' ')}</td>
+    function renderAdminRecentTable(scans) {
+      const wrap = document.getElementById('admin-recent-table');
+      if (!scans.length) { wrap.innerHTML = `<div class="empty-state"><p>No scans yet</p></div>`; return; }
+      const iconMap = { sms: 'SMS', email_address: 'EMAIL', email_body: 'BODY', url: 'URL' };
+      const rows = scans.map(s => {
+        const v = s.verdict || '';
+        const cls = ['DANGEROUS', 'PHISHING', 'SPAM'].includes(v) ? 'badge-dangerous' : v === 'SUSPICIOUS' ? 'badge-suspicious' : 'badge-safe';
+        const date = new Date(s.created_at).toLocaleDateString('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        return `<tr><td>${iconMap[s.scan_type] || 'SCAN'} ${s.scan_type.replace('_', ' ')}</td>
         <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.82rem;color:var(--text-secondary);">${s.input_text}</td>
         <td><span class="badge ${cls}">${v}</span></td>
-        <td style="font-weight:600;">${s.risk_score||0}/100</td>
+        <td style="font-weight:600;">${s.risk_score || 0}/100</td>
         <td style="font-size:0.8rem;color:var(--text-light);">${date}</td>
-        <td style="font-size:0.8rem;color:var(--text-light);">User #${s.user_id||'—'}</td>
+        <td style="font-size:0.85rem;color:var(--text-primary);font-weight:600;">${s.user_id || 'Anonymous'}</td>
       </tr>`;
-    }).join('');
-    wrap.innerHTML = `<table><thead><tr><th>Type</th><th>Input</th><th>Verdict</th><th>Risk</th><th>Time</th><th>User</th></tr></thead><tbody>${rows}</tbody></table>`;
-  }
+      }).join('');
+      wrap.innerHTML = `<table><thead><tr><th>Type</th><th>Input</th><th>Verdict</th><th>Risk</th><th>Time</th><th>User</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
 
-  async function loadUsers() {
-    const wrap = document.getElementById('users-table');
-    wrap.innerHTML = `<div class="empty-state"><p>Loading users...</p></div>`;
-    try {
-      const res = await API.get('/api/admin/users');
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      const users = data.users;
-      if (!users.length) { wrap.innerHTML = `<div class="empty-state"><p>No users registered</p></div>`; return; }
-      const rows = users.map(u => {
-        const roleBadge = u.role === 'admin' ? `<span class="badge" style="background:rgba(255,165,2,0.12);color:#b36b00;">Admin</span>` : `<span class="badge badge-safe">User</span>`;
-        const status = u.is_active ? `<span class="badge badge-safe">Active</span>` : `<span class="badge badge-suspicious">Inactive</span>`;
-        const joined = new Date(u.created_at).toLocaleDateString('en',{month:'short',day:'numeric',year:'numeric'});
-        return `<tr>
+    async function loadUsers() {
+      const wrap = document.getElementById('users-table');
+      wrap.innerHTML = `<div class="empty-state"><p>Loading users...</p></div>`;
+      try {
+        const res = await API.get('/api/admin/users');
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        const users = data.users;
+        if (!users.length) { wrap.innerHTML = `<div class="empty-state"><p>No users registered</p></div>`; return; }
+        const rows = users.map(u => {
+          const roleBadge = u.role === 'admin' ? `<span class="badge" style="background:rgba(255,165,2,0.12);color:#b36b00;">Admin</span>` : `<span class="badge badge-safe">User</span>`;
+          const status = u.is_active ? `<span class="badge badge-safe">Active</span>` : `<span class="badge badge-suspicious">Inactive</span>`;
+          const joined = new Date(u.created_at).toLocaleDateString('en', { month: 'short', day: 'numeric', year: 'numeric' });
+          return `<tr>
           <td><strong>${u.name}</strong></td>
           <td style="font-size:0.82rem;">${u.email}</td>
           <td>${roleBadge}</td>
           <td>${status}</td>
-          <td style="font-weight:700;">${u.total_scans||0}</td>
+          <td style="font-weight:700;">${u.total_scans || 0}</td>
           <td style="font-size:0.8rem;color:var(--text-light);">${joined}</td>
           <td>
             ${u.role !== 'admin' ? `
               <div class="user-actions">
-                <button class="btn btn-outline btn-sm" onclick="toggleUser(${u.id})">${u.is_active?'Deactivate':'Activate'}</button>
-                <button class="btn btn-danger btn-sm" onclick="deleteUser(${u.id}, '${u.name}')"><i class="fas fa-trash"></i></button>
+                <button class="btn btn-outline btn-sm" onclick="toggleUser('${u.id}')">${u.is_active ? 'Deactivate' : 'Activate'}</button>
+                <button class="btn btn-danger btn-sm" onclick="deleteUser('${u.id}', '${u.name}')"><i class="fas fa-trash"></i></button>
               </div>` : '<span class="text-muted" style="font-size:0.8rem;">Protected</span>'}
           </td>
         </tr>`;
-      }).join('');
-      wrap.innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Scans</th><th>Joined</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
-    } catch(e) { wrap.innerHTML = `<div class="empty-state"><p>Error: ${e.message}</p></div>`; }
-  }
-
-  async function toggleUser(uid) {
-    try {
-      const res = await API.post(`/api/admin/user/${uid}/toggle`, {});
-      const data = await res.json();
-      if (data.success) { showToast(data.message, 'success'); loadUsers(); }
-      else showToast(data.message, 'error');
-    } catch { showToast('Failed to toggle user', 'error'); }
-  }
-
-  async function deleteUser(uid, name) {
-    if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
-    try {
-      const res = await API.del(`/api/admin/user/${uid}`);
-      const data = await res.json();
-      if (data.success) { showToast('User deleted', 'success'); loadUsers(); }
-      else showToast(data.message, 'error');
-    } catch { showToast('Failed to delete user', 'error'); }
-  }
-
-  async function loadScans(page = 1) {
-    currentScansPage = page;
-    const wrap = document.getElementById('all-scans-table');
-    wrap.innerHTML = `<div class="empty-state"><p>Loading scans...</p></div>`;
-    try {
-      const res = await API.get(`/api/admin/scans?page=${page}`);
-      const data = await res.json();
-      if (!data.success) throw new Error(data.message);
-      const iconMap = { sms:'📱', email_address:'✉️', email_body:'📄', url:'🔗' };
-      const rows = data.scans.map(s => {
-        const v = s.verdict||'';
-        const cls = ['DANGEROUS','PHISHING','SPAM'].includes(v)?'badge-dangerous':v==='SUSPICIOUS'?'badge-suspicious':'badge-safe';
-        const date = new Date(s.created_at).toLocaleDateString('en',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-        return `<tr>
-          <td style="font-size:0.8rem;color:var(--text-light);">#${s.id}</td>
-          <td>${iconMap[s.scan_type]||'🔍'} ${s.scan_type.replace('_',' ')}</td>
-          <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8rem;">${s.input_text}</td>
-          <td><span class="badge ${cls}">${v}</span></td>
-          <td style="font-weight:700;">${s.risk_score||0}/100</td>
-          <td style="font-size:0.8rem;">${date}</td>
-          <td style="font-size:0.8rem;color:var(--text-light);">User #${s.user_id||'—'}</td>
-        </tr>`;
-      }).join('');
-      wrap.innerHTML = `<table><thead><tr><th>#ID</th><th>Type</th><th>Input</th><th>Verdict</th><th>Risk</th><th>Time</th><th>User</th></tr></thead><tbody>${rows}</tbody></table>`;
-
-      // Pagination
-      const pg = document.getElementById('scans-pagination');
-      pg.innerHTML = '';
-      for (let i = 1; i <= data.pages; i++) {
-        const btn = document.createElement('button');
-        btn.className = `btn btn-sm ${i===page?'btn-primary':'btn-outline'}`;
-        btn.textContent = i;
-        btn.onclick = () => loadScans(i);
-        pg.appendChild(btn);
-      }
-    } catch(e) { wrap.innerHTML = `<div class="empty-state"><p>Error: ${e.message}</p></div>`; }
-  }
-
-  function renderAnalytics() {
-    if (!globalStats) return;
-    const daily = globalStats.daily_activity || {};
-    const last30 = [];
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      const key = d.toISOString().split('T')[0];
-      last30.push({ label: d.toLocaleDateString('en',{month:'short',day:'numeric'}), val: daily[key]||0 });
+        }).join('');
+        wrap.innerHTML = `<table><thead><tr><th>Name</th><th>Email</th><th>Role</th><th>Status</th><th>Scans</th><th>Joined</th><th>Actions</th></tr></thead><tbody>${rows}</tbody></table>`;
+      } catch (e) { wrap.innerHTML = `<div class="empty-state"><p>Error: ${e.message}</p></div>`; }
     }
-    renderLine('chart-analytics-compare', { labels: last30.map(x=>x.label), data: last30.map(x=>x.val), label: 'Total Scans', color: '#00D4FF' });
-    renderLine('chart-analytics-types', { labels: last30.map(x=>x.label), data: last30.map(x=>x.val), label: 'All Types', color: '#7B5EA7' });
-  }
-</script>
+
+    async function toggleUser(uid) {
+      try {
+        const res = await API.post(`/api/admin/user/${uid}/toggle`, {});
+        const data = await res.json();
+        if (data.success) { showToast(data.message, 'success'); loadUsers(); }
+        else showToast(data.message, 'error');
+      } catch { showToast('Failed to toggle user', 'error'); }
+    }
+
+    async function deleteUser(uid, name) {
+      if (!confirm(`Delete user "${name}"? This cannot be undone.`)) return;
+      try {
+        const res = await API.del(`/api/admin/user/${uid}`);
+        const data = await res.json();
+        if (data.success) { showToast('User deleted', 'success'); loadUsers(); }
+        else showToast(data.message, 'error');
+      } catch { showToast('Failed to delete user', 'error'); }
+    }
+
+    async function loadScans(page = 1) {
+      currentScansPage = page;
+      const wrap = document.getElementById('all-scans-table');
+      wrap.innerHTML = `<div class="empty-state"><p>Loading scans...</p></div>`;
+      try {
+        const res = await API.get(`/api/admin/scans?page=${page}`);
+        const data = await res.json();
+        if (!data.success) throw new Error(data.message);
+        const iconMap = { sms: 'SMS', email_address: 'EMAIL', email_body: 'BODY', url: 'URL' };
+        const perPage = 10;
+        const rows = data.scans.map((s, index) => {
+          const v = s.verdict || '';
+          const cls = ['DANGEROUS', 'PHISHING', 'SPAM'].includes(v)
+            ? 'badge-dangerous'
+            : v === 'SUSPICIOUS'
+              ? 'badge-suspicious'
+              : 'badge-safe';
+
+          const date = new Date(s.created_at).toLocaleDateString('en', {
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+          });
+
+          return `<tr>
+    <td style="font-size:0.8rem;color:var(--text-light);">${((page - 1) * 10) + index + 1}</td>
+    <td>${iconMap[s.scan_type] || 'SCAN'} ${s.scan_type.replace('_', ' ')}</td>
+    <td style="max-width:200px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.8rem;">${s.input_text}</td>
+    <td><span class="badge ${cls}">${v}</span></td>
+    <td style="font-weight:700;">${s.risk_score || 0}/100</td>
+    <td style="font-size:0.8rem;">${date}</td>
+    <td style="font-size:0.85rem;color:var(--text-primary);font-weight:600;">${s.user_id || 'Anonymous'}</td>
+ </tr>`;
+        }).join('');
+
+        wrap.innerHTML = `<table><thead><tr><th>Sr.No</th><th>Type</th><th>Input</th><th>Verdict</th><th>Risk</th><th>Time</th><th>User</th></tr></thead><tbody>${rows}</tbody></table>`;
+
+        // Pagination
+        const pg = document.getElementById('scans-pagination');
+        pg.innerHTML = '';
+        for (let i = 1; i <= data.pages; i++) {
+          const btn = document.createElement('button');
+          btn.className = `btn btn-sm ${i === page ? 'btn-primary' : 'btn-outline'}`;
+          btn.textContent = i;
+          btn.onclick = () => loadScans(i);
+          pg.appendChild(btn);
+        }
+      } catch (e) { wrap.innerHTML = `<div class="empty-state"><p>Error: ${e.message}</p></div>`; }
+    }
+
+    function renderAnalytics() {
+      if (!globalStats) return;
+      const daily = globalStats.daily_activity || {};
+      const last30 = [];
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        last30.push({ label: d.toLocaleDateString('en', { month: 'short', day: 'numeric' }), val: daily[key] || 0 });
+      }
+      renderLine('chart-analytics-compare', { labels: last30.map(x => x.label), data: last30.map(x => x.val), label: 'Total Scans', color: '#00D4FF' });
+
+      const dailyByType = globalStats.daily_by_type || {};
+      const typeDistribution = globalStats.type_distribution || {};
+      const scanTypes = [
+        { key: 'sms', label: 'SMS', color: '#00D4FF' },
+        { key: 'email_address', label: 'Email Address', color: '#7B5EA7' },
+        { key: 'email_body', label: 'Email Body', color: '#FFA502' },
+        { key: 'url', label: 'URL', color: '#FF4757' }
+      ];
+      renderMultiBar('chart-analytics-types', {
+        labels: last30.map(x => x.label),
+        datasets: scanTypes.map(type => ({
+          label: type.label,
+          color: type.color,
+          data: last30.map((day, index) => {
+            const date = new Date();
+            date.setDate(date.getDate() - (29 - index));
+            const key = date.toISOString().split('T')[0];
+            const valuesForDay = dailyByType[key] || {};
+            return valuesForDay[type.key]
+              || valuesForDay[type.key.toUpperCase()]
+              || valuesForDay[type.key.replace('_', '')]
+              || 0;
+          })
+        }))
+      });
+
+      const trendChart = window.Chart && Chart.getChart('chart-analytics-types');
+      const hasDailyTypeData = trendChart?.data.datasets.some(dataset => dataset.data.some(value => value > 0));
+      if (!hasDailyTypeData && Object.keys(typeDistribution).length) {
+        const fallbackData = scanTypes.map(type => (
+          typeDistribution[type.key]
+          || typeDistribution[type.key.toUpperCase()]
+          || typeDistribution[type.key.replace('_', '')]
+          || (type.key === 'sms' ? typeDistribution.message : 0)
+          || 0
+        ));
+        trendChart.data.datasets.forEach((dataset, index) => {
+          dataset.data = dataset.data.map((value, dayIndex) => dayIndex === dataset.data.length - 1 ? fallbackData[index] : value);
+        });
+        trendChart.update();
+      }
+    }
+  </script>
 </body>
+
 </html>

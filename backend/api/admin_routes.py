@@ -26,8 +26,24 @@ def serialize_scan(scan):
     scan_dict = dict(scan)
     scan_dict['id'] = str(scan_dict['_id'])
     del scan_dict['_id']
-    if scan_dict.get('user_id'):
-        scan_dict['user_id'] = str(scan_dict['user_id'])
+    
+    # Look up the user's name and replace user_id so the frontend displays the name directly
+    #user_id = scan_dict.get('user_id')
+    #user_id = g.user_id
+    user_id = scan.get('user_id')
+    if user_id:
+        try:
+            obj_id = ObjectId(user_id) if not isinstance(user_id, ObjectId) else user_id
+            user = db.users.find_one({"_id": obj_id}, {"name": 1})
+            if user:
+                scan_dict['user_id'] = user.get('name', 'Unknown User')
+            else:
+                scan_dict['user_id'] = 'Unknown User'
+        except Exception:
+            scan_dict['user_id'] = 'Unknown User'
+    else:
+        scan_dict['user_id'] = 'Anonymous'
+
     if scan_dict.get('created_at'):
         scan_dict['created_at'] = scan_dict['created_at'].isoformat()
     return scan_dict
@@ -103,7 +119,7 @@ def delete_user(uid):
 @admin_required
 def get_scans():
     page = request.args.get('page', 1, type=int)
-    per_page = 20
+    per_page = 10
     skip = (page - 1) * per_page
     
     total = db.scans.count_documents({})
@@ -117,7 +133,6 @@ def get_scans():
         'pages': pages,
         'current_page': page
     })
-
 
 @admin_bp.route('/stats', methods=['GET'])
 @admin_required
@@ -147,14 +162,24 @@ def stats():
     
     recent_scans = db.scans.find({"created_at": {"$gte": thirty_ago}})
     daily = {}
+    daily_by_type = {}
     hourly = {}
     
     for s in recent_scans:
-        if s.get('created_at'):
-            day = s['created_at'].strftime('%Y-%m-%d')
+        created_at = s.get('created_at')
+        if created_at:
+            # FIX: Normalize naive datetimes to UTC to prevent comparison errors
+            if created_at.tzinfo is None:
+                created_at = created_at.replace(tzinfo=timezone.utc)
+                
+            day = created_at.strftime('%Y-%m-%d')
             daily[day] = daily.get(day, 0) + 1
-            if s['created_at'] >= seven_ago:
-                h = s['created_at'].strftime('%H')
+            scan_type = s.get('scan_type') or 'unknown'
+            scan_type = {'message': 'sms', 'email': 'email_body'}.get(scan_type, scan_type)
+            type_counts_for_day = daily_by_type.setdefault(day, {})
+            type_counts_for_day[scan_type] = type_counts_for_day.get(scan_type, 0) + 1
+            if created_at >= seven_ago:
+                h = created_at.strftime('%H')
                 hourly[h] = hourly.get(h, 0) + 1
 
     # Top flagged domains
@@ -193,6 +218,7 @@ def stats():
             'verdict_distribution': verdict_dist,
             'type_distribution': type_dist,
             'daily_activity': daily,
+            'daily_by_type': daily_by_type,
             'hourly_activity': hourly,
             'top_flagged_domains': top_domains,
             'top_users': top_users

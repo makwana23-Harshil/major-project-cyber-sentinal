@@ -45,7 +45,7 @@ const DemoView = {
           </div>
           
           <button class="btn-cyber ${isPhish ? 'btn-danger' : 'btn-primary'} btn-sm" style="width: 100%;" onclick="DemoView.executeDemo('${sample.id}')">
-            ⚡ Load & Scan Scenario
+            Load & Scan Scenario
           </button>
         </div>
       `;

@@ -152,7 +152,7 @@ const DashboardView = {
       const isSafe = s.prediction.includes('Safe') || s.prediction.includes('Real');
       const isSuspicious = s.prediction.includes('Suspicious');
       const tagClass = isSafe ? 'risk-tag-safe' : (isSuspicious ? 'risk-tag-medium' : 'risk-tag-high');
-      const typeIcon = s.scan_type === 'url' ? '🔗' : (s.scan_type === 'email' ? '📧' : (s.scan_type === 'message' ? '💬' : '📝'));
+      const typeIcon = s.scan_type === 'url' ? 'URL' : (s.scan_type === 'email' ? 'EMAIL' : (s.scan_type === 'message' ? 'SMS' : 'SCAN'));
 
       return `
         <tr style="cursor: pointer;" onclick="HistoryView.openDetailModal('${s.id}')">

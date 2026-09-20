@@ -117,28 +117,28 @@ def _build_sms_notes(text: str, verdict: str, urls: list, links: list, has_trans
     text_lower = text.lower()
 
     if has_transactional:
-        notes.append('✅ Recognized authentic transactional message pattern (Booking / Banking / Policy alert)')
+        notes.append('Recognized authentic transactional message pattern (Booking / Banking / Policy alert)')
 
     spam_triggers = ['win', 'prize', 'lottery', 'claim now', 'urgent', 'cash prize',
                      'congratulations', 'selected', 'suspended', 'free iphone']
     found = [t for t in spam_triggers if t in text_lower]
     if found:
-        notes.append(f'⚠️ Spam keywords detected: {", ".join(found[:4])}')
+        notes.append(f'Spam keywords detected: {", ".join(found[:4])}')
 
     if urls:
-        notes.append(f'🔗 {len(urls)} embedded URL(s) extracted and inspected')
+        notes.append(f'{len(urls)} embedded URL(s) extracted and inspected')
 
     # Link status highlights
     for l in links:
         if l.get('verdict') == 'SAFE':
             final_host = l.get('final_url', l.get('url', ''))
-            notes.append(f'✅ Link verified safe: {final_host[:50]} (SSL secure)')
+            notes.append(f'Link verified safe: {final_host[:50]} (SSL secure)')
         elif l.get('verdict') == 'DANGEROUS':
-            notes.append(f'🔴 Dangerous link detected: {l.get("url")}')
+            notes.append(f'Dangerous link detected: {l.get("url")}')
         elif l.get('verdict') == 'SUSPICIOUS':
-            notes.append(f'⚠️ Link requires caution: {l.get("url")}')
+            notes.append(f'Link requires caution: {l.get("url")}')
 
     if verdict == 'LEGITIMATE' and not notes:
-        notes.append('✅ Message content appears safe and authentic')
+        notes.append('Message content appears safe and authentic')
 
     return notes

@@ -146,19 +146,19 @@ def analyze_url(url: str, do_inspect: bool = True) -> dict:
 def _build_url_notes(url: str, features: np.ndarray) -> list:
     notes = []
     if features[2] == 0:
-        notes.append('⚠️ No HTTPS protocol')
+        notes.append('No HTTPS protocol')
     if features[3] == 1:
-        notes.append('🔴 URL contains raw IP address')
+        notes.append('URL contains raw IP address')
     if features[6] == 1:
-        notes.append('🔴 @ symbol in URL — potential misdirection')
+        notes.append('@ symbol in URL — potential misdirection')
     if features[8] > 2:
-        notes.append(f'⚠️ {int(features[8])} phishing-related keywords in URL')
+        notes.append(f'{int(features[8])} phishing-related keywords in URL')
     if features[1] > 5:
-        notes.append(f'⚠️ Many dots ({int(features[1])}) in URL — possible subdomain abuse')
+        notes.append(f'Many dots ({int(features[1])}) in URL — possible subdomain abuse')
     if features[14] == 1:
-        notes.append('⚠️ Suspicious top-level domain (TLD)')
+        notes.append('Suspicious top-level domain (TLD)')
     if features[11] > 0:
-        notes.append(f'ℹ️ {int(features[11])} dashes in domain name')
+        notes.append(f'{int(features[11])} dashes in domain name')
     if not notes:
-        notes.append('✅ Lexical URL structure is standard')
+        notes.append('Lexical URL structure is standard')
     return notes

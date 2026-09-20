@@ -197,16 +197,16 @@ def inspect_link(url: str) -> dict:
     try:
         socket.getaddrinfo(hostname, None)
         dns_exists = True
-        evidence.append(f'✅ Domain resolved in public DNS records ({hostname})')
+        evidence.append(f'Domain resolved in public DNS records ({hostname})')
     except Exception:
         dns_exists = False
-        evidence.append(f'🔴 Domain does not exist in real-world DNS: "{hostname}"')
+        evidence.append(f'[HIGH] Domain does not exist in real-world DNS: "{hostname}"')
         risk_score += 75
 
     # Step 1: Typosquatting / Character Substitution Check
     is_typo, typo_detail = check_typosquatting(hostname)
     if is_typo:
-        evidence.append(f'🔴 {typo_detail}')
+        evidence.append(f'[HIGH] {typo_detail}')
         risk_score += 85
 
     # Step 2: SSL Check on initial host
@@ -214,12 +214,12 @@ def inspect_link(url: str) -> dict:
         ssl_ok = check_ssl(hostname)
         result['ssl_valid'] = ssl_ok
         if not ssl_ok:
-            evidence.append('⚠️ Invalid or missing SSL certificate')
+            evidence.append('[WARNING] Invalid or missing SSL certificate')
             risk_score += 25
     elif not dns_exists:
         result['ssl_valid'] = False
     else:
-        evidence.append('⚠️ No HTTPS — connection is unencrypted (HTTP)')
+        evidence.append('[WARNING] No HTTPS — connection is unencrypted (HTTP)')
         risk_score += 15
 
     # Step 3: Fetch page & follow redirects
@@ -242,17 +242,17 @@ def inspect_link(url: str) -> dict:
 
             # Check HTTP status code
             if resp.status_code == 404:
-                evidence.append('🔴 Webpage does not exist in the real world (HTTP 404 Not Found)')
+                evidence.append('[HIGH] Webpage does not exist in the real world (HTTP 404 Not Found)')
                 risk_score += 70
                 result['is_reachable'] = False
                 result['real_world_exists'] = False
             elif resp.status_code in (401, 403, 429):
                 # 403/401/429 means server is active and exists, but blocks automated crawlers or requires auth (e.g. Cloudflare / LeetCode)
-                evidence.append(f'ℹ️ Web server active and protected: HTTP {resp.status_code} ({resp.reason} / Anti-Bot Protection)')
+                evidence.append(f'Web server active and protected: HTTP {resp.status_code} ({resp.reason} / Anti-Bot Protection)')
                 result['is_reachable'] = True
                 result['real_world_exists'] = True
             elif resp.status_code >= 400:
-                evidence.append(f'⚠️ Server returned error: HTTP {resp.status_code} ({resp.reason})')
+                evidence.append(f'[WARNING] Server returned error: HTTP {resp.status_code} ({resp.reason})')
                 risk_score += 25
                 result['is_reachable'] = False
                 result['real_world_exists'] = False
@@ -280,17 +280,17 @@ def inspect_link(url: str) -> dict:
                 )
 
                 if is_known_shortener or is_related_domain:
-                    evidence.append(f'🔗 Short URL safely expanded: {original_domain} → {final_domain}')
+                    evidence.append(f'Short URL safely expanded: {original_domain} → {final_domain}')
                 elif resp.url.startswith('https://') and result['ssl_valid']:
-                    evidence.append(f'ℹ️ Redirect followed: {original_domain} → {final_domain} (HTTPS Secured)')
+                    evidence.append(f'Redirect followed: {original_domain} → {final_domain} (HTTPS Secured)')
                 elif not resp.url.startswith('https://'):
-                    evidence.append(f'⚠️ Insecure redirect: resolved to non-HTTPS destination ({final_domain})')
+                    evidence.append(f'[WARNING] Insecure redirect: resolved to non-HTTPS destination ({final_domain})')
                     risk_score += 20
                 else:
-                    evidence.append(f'ℹ️ Domain changed after redirect: {original_domain} → {final_domain}')
+                    evidence.append(f'Domain changed after redirect: {original_domain} → {final_domain}')
 
             if len(resp.history) > 4:
-                evidence.append(f'⚠️ Unusually long redirect chain ({len(resp.history)} hops)')
+                evidence.append(f'[WARNING] Unusually long redirect chain ({len(resp.history)} hops)')
                 risk_score += 15
 
             # Step 4: Parse HTML Content
@@ -308,19 +308,19 @@ def inspect_link(url: str) -> dict:
                 # Check phishing keywords
                 found_phish = [kw for kw in PHISHING_KEYWORDS if kw in page_text]
                 if found_phish:
-                    evidence.append(f'🔴 Phishing language detected: "{found_phish[0]}"')
+                    evidence.append(f'[HIGH] Phishing language detected: "{found_phish[0]}"')
                     risk_score += min(len(found_phish) * 10, 35)
 
                 # Urgency words
                 found_urgent = [w for w in URGENCY_WORDS if w in page_text]
                 if found_urgent:
-                    evidence.append(f'⚠️ Urgency manipulation: {", ".join(found_urgent[:3])}')
+                    evidence.append(f'[WARNING] Urgency manipulation: {", ".join(found_urgent[:3])}')
                     risk_score += min(len(found_urgent) * 5, 15)
 
                 # Brand impersonation check
                 for brand in KNOWN_BRANDS:
                     if brand in page_text and brand not in final_domain:
-                        evidence.append(f'🔴 Brand impersonation: "{brand}" mentioned but not hosted on official domain')
+                        evidence.append(f'[HIGH] Brand impersonation: "{brand}" mentioned but not hosted on official domain')
                         risk_score += 35
                         break
 
@@ -331,19 +331,19 @@ def inspect_link(url: str) -> dict:
                     input_types = [i.get('type', '').lower() for i in inputs]
                     if 'password' in input_types:
                         if parsed.scheme != 'https' or not result['ssl_valid']:
-                            evidence.append('🔴 Password input on insecure connection — credential harvesting risk')
+                            evidence.append('[HIGH] Password input on insecure connection — credential harvesting risk')
                             risk_score += 45
                         else:
-                            evidence.append('ℹ️ Secure login form detected')
+                            evidence.append('Secure login form detected')
 
         except requests.exceptions.ConnectionError:
-            evidence.append('🔴 Server connection failed — site does not exist or host is unreachable')
+            evidence.append('[HIGH] Server connection failed — site does not exist or host is unreachable')
             risk_score += 70
         except requests.exceptions.Timeout:
-            evidence.append('⚠️ Connection timed out — host is unresponsive')
+            evidence.append('[WARNING] Connection timed out — host is unresponsive')
             risk_score += 25
         except Exception as e:
-            evidence.append(f'⚠️ Analysis encountered error: {str(e)[:80]}')
+            evidence.append(f'[WARNING] Analysis encountered error: {str(e)[:80]}')
             risk_score += 15
 
     # Step 5: VirusTotal & Google Safe Browsing APIs
@@ -351,15 +351,15 @@ def inspect_link(url: str) -> dict:
     if vt['available']:
         result['virustotal_score'] = f"{vt['positives']}/{vt['total']}"
         if vt['positives'] > 0:
-            evidence.append(f'🔴 VirusTotal: {vt["positives"]} security vendors flagged this URL')
+            evidence.append(f'[HIGH] VirusTotal: {vt["positives"]} security vendors flagged this URL')
             risk_score += min(vt['positives'] * 15, 60)
         else:
-            evidence.append(f'✅ VirusTotal: Clean (0/{vt["total"]} vendors flagged)')
+            evidence.append(f'VirusTotal: Clean (0/{vt["total"]} vendors flagged)')
 
     gsb_flag = google_safe_browsing_check(url)
     result['safe_browsing_flag'] = gsb_flag
     if gsb_flag:
-        evidence.append('🔴 Google Safe Browsing: URL is flagged as dangerous')
+        evidence.append('[HIGH] Google Safe Browsing: URL is flagged as dangerous')
         risk_score += 60
 
     # Step 6: Gemini LLM Real-World Verification & Content Analysis
@@ -381,18 +381,18 @@ def inspect_link(url: str) -> dict:
         summary = llm_data.get('safety_summary', '')
 
         if not llm_exists or not dns_exists or (result.get('http_status') == 404):
-            evidence.append(f'🤖 AI Verification: Confirmed non-existent / broken real-world link ({identity})')
+            evidence.append(f'AI Verification: Confirmed non-existent / broken real-world link ({identity})')
             risk_score = max(risk_score, 80)
         elif llm_verdict in ('PHISHING', 'FAKE', 'DANGEROUS'):
-            evidence.append(f'🤖 AI Threat Alert: {summary}')
+            evidence.append(f'AI Threat Alert: {summary}')
             risk_score = max(risk_score, llm_data.get('risk_score', 85))
         elif llm_verdict == 'SAFE' and dns_exists and result['is_reachable']:
-            evidence.append(f'🤖 AI Entity Verified: {identity}')
-            if not any('🔴' in e for e in evidence):
+            evidence.append(f'AI Entity Verified: {identity}')
+            if not any('[HIGH]' in e for e in evidence):
                 risk_score = min(risk_score, 10)
 
     # Final Verdict Assessment
-    has_red_flags = any('🔴' in e for e in evidence)
+    has_red_flags = any('[HIGH]' in e for e in evidence)
     is_non_existent = (not dns_exists) or (result.get('http_status') == 404) or (not result['is_reachable'])
 
     if is_non_existent:

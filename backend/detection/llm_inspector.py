@@ -1,7 +1,3 @@
-"""
-LLM Real-World & Content Safety Inspector
-Uses Gemini API to verify if URLs, domains, and emails exist and whether their live content is authentic, deceptive, or malicious.
-"""
 import json
 import logging
 from config import Config
@@ -173,20 +169,20 @@ def analyze_email_with_llm(email: str, has_mx: bool, is_disposable: bool, domain
     if not client:
         return {'enabled': False}
 
-    prompt = f"""You are a cybersecurity expert. Check this email address for real-world authenticity and safety:
-
-Email: {email}
-Domain: {domain}
-Has Valid Mail Exchanger (MX) Records: {'Yes' if has_mx else 'NO (No mail server exists)'}
-Is Known Disposable/Temp Provider: {'Yes' if is_disposable else 'No'}
-
-Respond ONLY with valid JSON:
-{{
-  "real_world_exists": true/false,
-  "verdict": "LEGITIMATE" | "SUSPICIOUS" | "FAKE",
-  "risk_score": <integer 0 to 100>,
-  "analysis": "<1-2 sentences assessment of email legitimacy>"
-}}"""
+    prompt = f"""
+    You are a cybersecurity expert. 
+    Check this email address for real-world authenticity and safety:
+    Email: {email}
+    Domain: {domain}
+    Has Valid Mail Exchanger (MX) Records: {'Yes' if has_mx else 'NO (No mail server exists)'}
+    Is Known Disposable/Temp Provider: {'Yes' if is_disposable else 'No'}
+    Respond ONLY with valid JSON:
+    {{
+        "real_world_exists": true/false,
+        "verdict": "LEGITIMATE" | "SUSPICIOUS" | "FAKE",
+        "risk_score": <integer 0 to 100>,
+        "analysis": "<1-2 sentences assessment of email legitimacy>"
+    }}"""
 
     try:
         response = client.models.generate_content(

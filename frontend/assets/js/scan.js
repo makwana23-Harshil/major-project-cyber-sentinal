@@ -26,10 +26,10 @@ let loadingStepTimer;
 function showLoading(type) {
   document.getElementById('scan-loading').classList.remove('hidden');
   const titles = {
-    'sms': '🔍 Analyzing SMS Message...',
-    'email-address': '🔍 Validating Email Address...',
-    'email-body': '🔍 Scanning Email Body...',
-    'url': '🔍 Deep Inspecting URL...'
+    'sms': 'Analyzing SMS Message...',
+    'email-address': 'Validating Email Address...',
+    'email-body': 'Scanning Email Body...',
+    'url': 'Deep Inspecting URL...'
   };
   document.getElementById('scan-loading-title').textContent = titles[type] || 'Analyzing...';
 
@@ -65,7 +65,9 @@ async function runScan(type) {
   if (type === 'sms') {
     inputVal = (document.getElementById('sms-input').value || '').trim();
     if (!inputVal) { showToast('Please enter an SMS message', 'warning'); return; }
-    payload = { text: inputVal, inspect_links: document.getElementById('sms-inspect').checked };
+
+    payload = {input_text: inputVal,inspect_links: document.getElementById('sms-inspect').checked};
+
   } else if (type === 'email-address') {
     inputVal = (document.getElementById('email-addr-input').value || '').trim();
     if (!inputVal) { showToast('Please enter an email address', 'warning'); return; }
@@ -135,7 +137,7 @@ function getVerdictStyle(verdict) {
   const isWarning = ['SUSPICIOUS'].includes(v);
   const isSafe = ['SAFE','LEGITIMATE','VALID','HAM'].includes(v);
   return {
-    icon: isDanger ? '🔴' : isWarning ? '🟡' : '✅',
+    icon: isDanger ? 'DANGER' : isWarning ? 'WARNING' : 'SAFE',
     iconClass: isDanger ? 'danger' : isWarning ? 'warning' : 'safe',
     badgeClass: isDanger ? 'badge-dangerous' : isWarning ? 'badge-suspicious' : 'badge-safe',
     color: isDanger ? 'var(--danger)' : isWarning ? 'var(--warning)' : 'var(--success)'
@@ -157,7 +159,7 @@ function buildLinkInspectionHTML(links) {
   if (!links || !links.length) return '';
   return `
     <div class="links-section">
-      <h4 style="font-size:0.88rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:1rem;">🔗 Real-World Link Inspection & Content Analysis (${links.length})</h4>
+      <h4 style="font-size:0.88rem;text-transform:uppercase;letter-spacing:0.06em;color:var(--text-light);margin-bottom:1rem;">Real-World Link Inspection & Content Analysis (${links.length})</h4>
       ${links.map(link => {
         const s = getVerdictStyle(link.verdict);
         const llm = link.llm_analysis;
@@ -172,20 +174,20 @@ function buildLinkInspectionHTML(links) {
           ${link.page_title ? `<div style="font-size:0.82rem;color:var(--text-secondary);margin:0.25rem 0 0.5rem;"><strong>Page Title:</strong> "${link.page_title}"</div>` : ''}
 
           <div class="link-meta">
-            ${link.dns_exists !== undefined ? `<span class="link-tag ${link.dns_exists ? 'green' : 'red'}">${link.dns_exists ? '🌐 DNS Active' : '🔴 Non-Existent Domain'}</span>` : ''}
-            <span class="link-tag ${link.ssl_valid ? 'green' : 'red'}">${link.ssl_valid ? '🔒 SSL Secure' : '⚠️ No Valid SSL'}</span>
-            ${link.is_reachable !== undefined ? `<span class="link-tag ${link.is_reachable ? 'green' : 'red'}">${link.is_reachable ? '✅ Web Server Active' : '🔴 Server Unreachable'}</span>` : ''}
+            ${link.dns_exists !== undefined ? `<span class="link-tag ${link.dns_exists ? 'green' : 'red'}">${link.dns_exists ? 'DNS Active' : 'Non-Existent Domain'}</span>` : ''}
+            <span class="link-tag ${link.ssl_valid ? 'green' : 'red'}">${link.ssl_valid ? 'SSL Secure' : 'No Valid SSL'}</span>
+            ${link.is_reachable !== undefined ? `<span class="link-tag ${link.is_reachable ? 'green' : 'red'}">${link.is_reachable ? 'Web Server Active' : 'Server Unreachable'}</span>` : ''}
             ${link.http_status ? `<span class="link-tag ${link.http_status < 400 ? 'green' : 'red'}">HTTP ${link.http_status}</span>` : ''}
             ${link.redirect_count > 0 ? `<span class="link-tag orange">↩ ${link.redirect_count} Redirect(s)</span>` : ''}
-            ${link.safe_browsing_flag ? `<span class="link-tag red">🚨 Google Safe Browsing Flagged</span>` : ''}
-            ${link.virustotal_score ? `<span class="link-tag ${link.virustotal_score.startsWith('0') ? 'green' : 'red'}">🦠 VT: ${link.virustotal_score}</span>` : ''}
+            ${link.safe_browsing_flag ? `<span class="link-tag red">Google Safe Browsing Flagged</span>` : ''}
+            ${link.virustotal_score ? `<span class="link-tag ${link.virustotal_score.startsWith('0') ? 'green' : 'red'}">VT: ${link.virustotal_score}</span>` : ''}
           </div>
 
           ${llm && llm.enabled ? `
             <div style="margin-top:12px;padding:12px 14px;background:linear-gradient(135deg,rgba(0,212,255,0.06),rgba(123,94,167,0.08));border:1px solid rgba(0,212,255,0.25);border-radius:8px;">
               <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:6px;flex-wrap:wrap;gap:6px;">
                 <span style="font-weight:700;font-size:0.85rem;color:var(--navy);"><i class="fas fa-brain" style="color:var(--blue);"></i> AI Real-World Existence & Content Analysis</span>
-                <span class="badge ${llm.real_world_exists ? 'badge-safe' : 'badge-dangerous'}">${llm.real_world_exists ? '🌍 Real-World Entity: YES' : '🔴 Real-World Entity: NO (Fake/Dead)'}</span>
+                <span class="badge ${llm.real_world_exists ? 'badge-safe' : 'badge-dangerous'}">${llm.real_world_exists ? 'Real-World Entity: YES' : 'Real-World Entity: NO (Fake/Dead)'}</span>
               </div>
               <div style="font-size:0.85rem;font-weight:700;color:var(--navy);margin-bottom:4px;">${llm.site_identity || ''}</div>
               <div style="font-size:0.82rem;color:var(--text-secondary);line-height:1.5;">${llm.safety_summary || ''}</div>
@@ -266,13 +268,13 @@ function buildResultHTML(type, result) {
   }
 
   return `
-    <div class="result-panel">
+    <div class="result-panel verdict-${s.iconClass}">
       <div class="result-header">
         <div class="verdict-display">
-          <div class="verdict-icon ${s.iconClass}">${s.icon}</div>
+          <div class="verdict-icon ${s.iconClass}" aria-label="${s.iconClass} status">${s.icon}</div>
           <div class="verdict-text">
-            <h3><span class="badge ${s.badgeClass}">${result.verdict}</span></h3>
-            <div class="verdict-sub">Confidence: ${conf}% &nbsp;|&nbsp; Risk Score: ${riskScore}/100</div>
+            <h3 class="verdict-heading"><span class="badge ${s.badgeClass}">${result.verdict}</span></h3>
+            <div class="verdict-sub"><span>Confidence <strong>${conf}%</strong></span><span class="verdict-divider">|</span><span>Risk Score <strong>${riskScore}/100</strong></span></div>
           </div>
         </div>
         <div style="font-size:0.8rem;color:var(--text-light);">${new Date().toLocaleTimeString()}</div>
@@ -284,10 +286,10 @@ function buildResultHTML(type, result) {
           <span style="font-size:0.85rem;font-weight:700;color:${riskScore>=65?'var(--danger)':riskScore>=35?'var(--warning)':'var(--success)'}">${riskScore}/100</span>
         </div>
         <div class="risk-bar-bg">
-          <div class="risk-bar-fill" style="width:0%;background:var(--success);"></div>
+          <div class="risk-bar-fill" style="width:0%;background:${riskScore>=65?'var(--danger)':riskScore>=35?'var(--warning)':'var(--success)'};"></div>
         </div>
         <div class="risk-pct" style="color:${riskScore>=65?'var(--danger)':riskScore>=35?'var(--warning)':'var(--success)'}">
-          ${riskScore < 35 ? '✅ Low Risk' : riskScore < 65 ? '⚠️ Moderate Risk' : '🔴 High Risk'}
+          ${riskScore < 35 ? 'Low Risk' : riskScore < 65 ? 'Moderate Risk' : 'High Risk'}
         </div>
         <div style="clear:both;"></div>
       </div>

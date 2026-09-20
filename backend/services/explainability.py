@@ -40,7 +40,7 @@ def generate_highlighted_markup(
         for u in embedded_urls:
             esc_u = html.escape(u)
             if esc_u in escaped_text:
-                replacement = f'<span class="xai-highlight xai-link" title="Detected URL: {esc_u}">🔗 {esc_u}</span>'
+                replacement = f'<span class="xai-highlight xai-link" title="Detected URL: {esc_u}">{esc_u}</span>'
                 escaped_text = escaped_text.replace(esc_u, replacement)
                 
     # Highlight social engineering matched phrases

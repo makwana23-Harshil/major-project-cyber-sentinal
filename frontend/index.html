@@ -10,11 +10,20 @@
     /* ── Hero ── */
     .hero {
       position: relative;
-      min-height: 100vh;
+      min-height: min(780px, 100vh);
       display: flex;
       align-items: center;
       overflow: hidden;
       background: linear-gradient(145deg, #fff 0%, #f0f7ff 60%, #e8f4ff 100%);
+    }
+    .hero .container {
+      width: 100%;
+      display: grid;
+      grid-template-columns: minmax(0, 1.08fr) minmax(380px, 0.92fr);
+      align-items: center;
+      gap: clamp(2rem, 5vw, 5rem);
+      padding-top: 7rem;
+      padding-bottom: 4rem;
     }
     .hero-content {
       position: relative;
@@ -74,12 +83,10 @@
       opacity: 0.06;
     }
     .hero-float {
-      position: absolute;
-      right: 5%;
-      top: 50%;
-      transform: translateY(-50%);
-      width: 45%;
-      max-width: 500px;
+      position: relative;
+      width: 100%;
+      max-width: 520px;
+      justify-self: end;
       display: grid;
       grid-template-columns: 1fr 1fr;
       gap: 1rem;
@@ -96,8 +103,8 @@
       transition: transform 0.4s ease;
     }
     .hero-card:hover { transform: translateY(-6px); }
-    .hero-card:nth-child(even) { margin-top: 1.5rem; }
-    .hero-card-icon { font-size: 1.8rem; margin-bottom: 0.5rem; }
+    .hero-card { min-height: 142px; display: flex; flex-direction: column; justify-content: center; }
+    .hero-card-icon { font-size: 1.1rem; font-weight: 700; letter-spacing: 0.08em; color: var(--blue-dark); margin-bottom: 0.5rem; }
     .hero-card-title { font-size: 0.85rem; font-weight: 700; margin-bottom: 0.25rem; }
     .hero-card-desc { font-size: 0.75rem; color: var(--text-secondary); }
 
@@ -222,7 +229,25 @@
 
     @keyframes fadeInDown { from { opacity: 0; transform: translateY(-20px); } to { opacity: 1; transform: translateY(0); } }
     @keyframes fadeInUp { from { opacity: 0; transform: translateY(20px); } to { opacity: 1; transform: translateY(0); } }
-    @keyframes fadeInRight { from { opacity: 0; transform: translate(40px, -50%); } to { opacity: 1; transform: translate(0, -50%); } }
+    @keyframes fadeInRight { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+    @media (max-width: 900px) {
+      .hero .container {
+        grid-template-columns: 1fr;
+        gap: 3rem;
+        padding-top: 8rem;
+      }
+      .hero-content { max-width: 720px; }
+      .hero-float { justify-self: start; max-width: 620px; }
+      .hero-visual { display: none; }
+    }
+    @media (max-width: 560px) {
+      .hero .container { gap: 2rem; padding-top: 7rem; padding-bottom: 3rem; }
+      .hero-sub { font-size: 1rem; margin-bottom: 1.75rem; }
+      .hero-actions { gap: 0.75rem; }
+      .hero-actions .btn { width: 100%; justify-content: center; }
+      .hero-float { grid-template-columns: 1fr; gap: 0.75rem; }
+      .hero-card { min-height: 116px; }
+    }
   </style>
 </head>
 <body>
@@ -230,7 +255,7 @@
 <!-- Navigation -->
 <nav class="navbar" id="navbar">
   <div class="nav-logo">
-    <div class="logo-icon">🛡️</div>
+    <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
     <span>CyberSentinel <span style="color:var(--blue)">Pro</span></span>
   </div>
   <div class="nav-links">
@@ -271,24 +296,24 @@
         </a>
       </div>
     </div>
-    <div class="hero-float">
+    <div class="hero-float" aria-label="CyberSentinel detection modules">
       <div class="hero-card reveal">
-        <div class="hero-card-icon">📱</div>
+        <div class="hero-card-icon">SMS</div>
         <div class="hero-card-title">SMS Detection</div>
         <div class="hero-card-desc">Detect spam & scam messages instantly</div>
       </div>
       <div class="hero-card reveal reveal-delay-1">
-        <div class="hero-card-icon">📧</div>
+        <div class="hero-card-icon">MAIL</div>
         <div class="hero-card-title">Email Analysis</div>
         <div class="hero-card-desc">Validate addresses & scan email bodies</div>
       </div>
       <div class="hero-card reveal reveal-delay-2">
-        <div class="hero-card-icon">🔗</div>
+        <div class="hero-card-icon">URL</div>
         <div class="hero-card-title">URL Inspection</div>
         <div class="hero-card-desc">Deep crawl & phishing detection</div>
       </div>
       <div class="hero-card reveal reveal-delay-3">
-        <div class="hero-card-icon">📊</div>
+        <div class="hero-card-icon">DATA</div>
         <div class="hero-card-title">Live Analytics</div>
         <div class="hero-card-desc">Real-time threat visualization</div>
       </div>
@@ -330,22 +355,22 @@
     </div>
     <div class="features-grid">
       <div class="feature-card reveal">
-        <div class="feature-icon">📱</div>
+        <div class="feature-icon"><i class="fas fa-comment-alt"></i></div>
         <h3>SMS Spam Detection</h3>
         <p class="text-muted mt-1">ML-powered Naive Bayes classifier detects spam and scam SMS messages. Automatically extracts and inspects any URLs embedded in the message.</p>
       </div>
       <div class="feature-card reveal reveal-delay-1">
-        <div class="feature-icon">✉️</div>
+        <div class="feature-icon"><i class="fas fa-envelope"></i></div>
         <h3>Email Address Validator</h3>
         <p class="text-muted mt-1">Checks syntax, MX DNS records, domain age via WHOIS, and flags disposable/temporary email providers. Gives a risk score for any address.</p>
       </div>
       <div class="feature-card reveal reveal-delay-2">
-        <div class="feature-icon">📄</div>
+        <div class="feature-icon"><i class="fas fa-file-lines"></i></div>
         <h3>Email Body Analysis</h3>
         <p class="text-muted mt-1">SVM-based classifier identifies phishing and spam email bodies. Extracts all hyperlinks and runs each through deep inspection.</p>
       </div>
       <div class="feature-card reveal reveal-delay-3">
-        <div class="feature-icon">🔗</div>
+        <div class="feature-icon"><i class="fas fa-link"></i></div>
         <h3>URL & Link Inspector</h3>
         <p class="text-muted mt-1">Crawls the live page, follows redirects, checks SSL, analyzes content for phishing patterns, brand impersonation, and checks VirusTotal + Google Safe Browsing APIs.</p>
       </div>

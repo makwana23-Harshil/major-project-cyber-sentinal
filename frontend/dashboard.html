@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -9,201 +10,228 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js@4.4.2/dist/chart.umd.min.js"></script>
 </head>
+
 <body>
 
-<!-- Navbar -->
-<nav class="navbar" id="navbar">
-  <div class="nav-logo">
-    <div class="logo-icon">🛡️</div>
-    <span>CyberSentinel <span style="color:var(--blue)">Pro</span></span>
-  </div>
-  <div class="nav-links">
-    <a href="dashboard.html" class="nav-link active">Dashboard</a>
-    <a href="scan.html" class="nav-link">Scanner</a>
-    <a href="history.html" class="nav-link">History</a>
-  </div>
-  <div class="nav-actions">
-    <span id="user-name-nav" class="text-muted" style="font-size:0.85rem;"></span>
-    <a href="scan.html" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> New Scan</a>
-  </div>
-</nav>
+  <!-- Navbar -->
+  <nav class="navbar" id="navbar">
+    <div class="nav-logo">
+      <div class="logo-icon"><i class="fas fa-shield-halved"></i></div>
+      <span>CyberSentinel <span style="color:var(--blue)">Pro</span></span>
+    </div>
+    <div class="nav-links">
+      <a href="dashboard.html" class="nav-link active">Dashboard</a>
+      <a href="scan.html" class="nav-link" >Scan</a>
 
-<div class="container pt-nav" style="padding-top:90px;">
-  <div style="padding:1.5rem 0 1rem;">
-    <h1 style="font-size:1.75rem;">Your Dashboard</h1>
-    <p class="text-muted">Overview of your threat detection activity and safety score.</p>
-  </div>
+      <a href="history.html" class="nav-link">History</a>
+    </div>
+    <div class="nav-actions">
+      <span id="user-name-nav" class="text-muted" style="font-size:0.85rem;"></span>
+      <a href="scan.html" class="btn btn-primary btn-sm"><i class="fas fa-search"></i> New Scan</a>
+    </div>
+  </nav>
 
-  <div class="dash-layout">
-    <!-- Sidebar -->
-    <div class="dash-sidebar">
-      <div class="user-info">
-        <div class="user-avatar" id="avatar-initials">U</div>
-        <div>
-          <div class="name" id="sidebar-name">Loading...</div>
-          <div class="role">User Account</div>
-        </div>
-      </div>
-      <a href="dashboard.html" class="sidebar-link active"><span class="si"><i class="fas fa-chart-pie"></i></span>Dashboard</a>
-      <a href="scan.html" class="sidebar-link"><span class="si"><i class="fas fa-search"></i></span>New Scan</a>
-      <a href="history.html" class="sidebar-link"><span class="si"><i class="fas fa-history"></i></span>Scan History</a>
-      <div class="sidebar-logout">
-        <button class="sidebar-link" style="background:rgba(255,71,87,0.1);color:#ff7a86;border:none;width:100%;text-align:left;" onclick="logout()">
-          <span class="si"><i class="fas fa-sign-out-alt"></i></span>Logout
-        </button>
-      </div>
+  <div class="container pt-nav" style="padding-top:90px;">
+    <div style="padding:1.5rem 0 1rem;">
+      <h1 style="font-size:1.75rem;">Your Dashboard</h1>
+      <p class="text-muted">Overview of your threat detection activity and safety score.</p>
     </div>
 
-    <!-- Main -->
-    <div class="dash-main">
+    <div class="dash-layout">
+      <!-- Sidebar -->
+      <div class="dash-sidebar">
+        <div class="user-info">
+          <div class="user-avatar" id="avatar-initials">U</div>
+          <div>
+            <div class="name" id="sidebar-name">Loading...</div>
+            <div class="role">User Account</div>
+          </div>
+        </div>
+        <a href="dashboard.html" class="sidebar-link active"><span class="si"><i
+              class="fas fa-chart-pie"></i></span>Dashboard</a>
 
-      <!-- Stats Row -->
-      <div class="grid-4 mb-3" id="stats-row">
-        <div class="stat-card reveal">
-          <div class="stat-icon blue"><i class="fas fa-search" style="color:var(--blue);"></i></div>
-          <div><div class="stat-value" id="stat-total">—</div><div class="stat-label">Total Scans</div></div>
-        </div>
-        <div class="stat-card reveal reveal-delay-1">
-          <div class="stat-icon red"><i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i></div>
-          <div><div class="stat-value" id="stat-threats">—</div><div class="stat-label">Threats Found</div></div>
-        </div>
-        <div class="stat-card reveal reveal-delay-2">
-          <div class="stat-icon green"><i class="fas fa-shield-halved" style="color:var(--success);"></i></div>
-          <div><div class="stat-value" id="stat-safe">—</div><div class="stat-label">Safe Results</div></div>
-        </div>
-        <div class="stat-card reveal reveal-delay-3">
-          <div class="stat-icon purple"><i class="fas fa-star" style="color:var(--purple);"></i></div>
-          <div><div class="stat-value" id="stat-score">—</div><div class="stat-label">Safety Score</div></div>
+        <a href="scan.html" class="sidebar-link"><i class="fas fa-search"></i><span>New Scan</span></a>
+        
+        <a href="history.html" class="sidebar-link"><span class="si"><i class="fas fa-history"></i></span>Scan
+          History</a>
+        <div class="sidebar-logout">
+          <button class="sidebar-link"
+            style="background:rgba(255,71,87,0.1);color:#ff7a86;border:none;width:100%;text-align:left;"
+            onclick="logout()">
+            <span class="si"><i class="fas fa-sign-out-alt"></i></span>Logout
+          </button>
         </div>
       </div>
 
-      <!-- Charts Row 1 -->
-      <div class="grid-2 mb-3">
+      <!-- Main -->
+      <div class="dash-main">
+
+        <!-- Stats Row -->
+        <div class="grid-4 mb-3" id="stats-row">
+          <div class="stat-card reveal">
+            <div class="stat-icon blue"><i class="fas fa-search" style="color:var(--blue);"></i></div>
+            <div>
+              <div class="stat-value" id="stat-total">—</div>
+              <div class="stat-label">Total Scans</div>
+            </div>
+          </div>
+          <div class="stat-card reveal reveal-delay-1">
+            <div class="stat-icon red"><i class="fas fa-exclamation-triangle" style="color:var(--danger);"></i></div>
+            <div>
+              <div class="stat-value" id="stat-threats">—</div>
+              <div class="stat-label">Threats Found</div>
+            </div>
+          </div>
+          <div class="stat-card reveal reveal-delay-2">
+            <div class="stat-icon green"><i class="fas fa-shield-halved" style="color:var(--success);"></i></div>
+            <div>
+              <div class="stat-value" id="stat-safe">—</div>
+              <div class="stat-label">Safe Results</div>
+            </div>
+          </div>
+          <div class="stat-card reveal reveal-delay-3">
+            <div class="stat-icon purple"><i class="fas fa-star" style="color:var(--purple);"></i></div>
+            <div>
+              <div class="stat-value" id="stat-score">—</div>
+              <div class="stat-label">Safety Score</div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Charts Row 1 -->
+        <div class="grid-2 mb-3">
+          <div class="chart-card reveal">
+            <div class="chart-title">Scan Types Breakdown</div>
+            <div class="chart-wrap"><canvas id="chart-types"></canvas></div>
+          </div>
+          <div class="chart-card reveal reveal-delay-1">
+            <div class="chart-title">Threat Verdicts</div>
+            <div class="chart-wrap"><canvas id="chart-verdicts"></canvas></div>
+          </div>
+        </div>
+
+        <!-- Charts Row 2 -->
+        <div class="chart-card mb-3 reveal">
+          <div class="chart-title">Activity — Last 30 Days</div>
+          <div class="chart-wrap tall"><canvas id="chart-activity"></canvas></div>
+        </div>
+
+        <!-- Recent Scans -->
         <div class="chart-card reveal">
-          <div class="chart-title">Scan Types Breakdown</div>
-          <div class="chart-wrap"><canvas id="chart-types"></canvas></div>
+          <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
+            <div class="chart-title" style="margin-bottom:0;">Recent Scans</div>
+            <a href="history.html" class="btn btn-outline btn-sm">View All</a>
+          </div>
+          <div class="table-wrap" id="recent-table">
+            <div class="empty-state">
+              <div class="empty-icon">📭</div>
+              <p>Loading scans...</p>
+            </div>
+          </div>
         </div>
-        <div class="chart-card reveal reveal-delay-1">
-          <div class="chart-title">Threat Verdicts</div>
-          <div class="chart-wrap"><canvas id="chart-verdicts"></canvas></div>
-        </div>
-      </div>
 
-      <!-- Charts Row 2 -->
-      <div class="chart-card mb-3 reveal">
-        <div class="chart-title">Activity — Last 30 Days</div>
-        <div class="chart-wrap tall"><canvas id="chart-activity"></canvas></div>
-      </div>
-
-      <!-- Recent Scans -->
-      <div class="chart-card reveal">
-        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:1rem;">
-          <div class="chart-title" style="margin-bottom:0;">Recent Scans</div>
-          <a href="history.html" class="btn btn-outline btn-sm">View All</a>
-        </div>
-        <div class="table-wrap" id="recent-table">
-          <div class="empty-state"><div class="empty-icon">📭</div><p>Loading scans...</p></div>
-        </div>
-      </div>
-
-    </div><!-- /dash-main -->
+      </div><!-- /dash-main -->
+    </div>
   </div>
-</div>
 
-<div id="toast-container"></div>
-<script src="assets/js/auth.js"></script>
-<script src="assets/js/api.js"></script>
-<script src="assets/js/animations.js"></script>
-<script src="assets/js/charts.js"></script>
-<script>
-  if (!requireAuth()) { /* redirected */ }
-  else loadDashboard();
-
-  async function loadDashboard() {
-    const user = getUserData();
-    if (user.name) {
-      document.getElementById('sidebar-name').textContent = user.name;
-      document.getElementById('user-name-nav').textContent = `Hi, ${user.name.split(' ')[0]}`;
-      document.getElementById('avatar-initials').textContent = user.name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2);
+  <div id="toast-container"></div>
+  <script src="assets/js/auth.js"></script>
+  <script src="assets/js/api.js"></script>
+  <script src="assets/js/animations.js"></script>
+  <script src="assets/js/charts.js"></script>
+  <script>
+    if (!requireAuth()) {
+      // No user token → login page
+    } else {
+      loadDashboard();
     }
 
-    try {
-      const [dashRes, statsRes] = await Promise.all([
-        API.get('/api/user/dashboard'),
-        API.get('/api/user/stats')
-      ]);
-      const dashData = await dashRes.json();
-      const statsData = await statsRes.json();
+    async function loadDashboard() {
+      const user = getUserData();
+      if (user.name) {
+        document.getElementById('sidebar-name').textContent = user.name;
+        document.getElementById('user-name-nav').textContent = `Hi, ${user.name.split(' ')[0]}`;
+        document.getElementById('avatar-initials').textContent = user.name.split(' ').map(w => w[0]).join('').toUpperCase().slice(0, 2);
+      }
 
-      if (dashData.success) renderDashboard(dashData.dashboard, statsData.stats);
-      else showToast('Failed to load dashboard data', 'error');
-    } catch (e) {
-      showToast('Cannot reach server. Is the backend running?', 'error');
+      try {
+        const [dashRes, statsRes] = await Promise.all([
+          API.get('/api/user/dashboard'),
+          API.get('/api/user/stats')
+        ]);
+        const dashData = await dashRes.json();
+        const statsData = await statsRes.json();
+
+        if (dashData.success) renderDashboard(dashData.dashboard, statsData.stats);
+        else showToast('Failed to load dashboard data', 'error');
+      } catch (e) {
+        showToast('Cannot reach server. Is the backend running?', 'error');
+      }
     }
-  }
 
-  function renderDashboard(dash, stats) {
-    // Stats cards
-    document.getElementById('stat-total').textContent = dash.total_scans || 0;
-    document.getElementById('stat-threats').textContent = dash.threats_found || 0;
-    document.getElementById('stat-safe').textContent = (dash.total_scans || 0) - (dash.threats_found || 0);
-    document.getElementById('stat-score').textContent = (dash.safety_score || 100) + '%';
+    function renderDashboard(dash, stats) {
+      // Stats cards
+      document.getElementById('stat-total').textContent = dash.total_scans || 0;
+      document.getElementById('stat-threats').textContent = dash.threats_found || 0;
+      document.getElementById('stat-safe').textContent = (dash.total_scans || 0) - (dash.threats_found || 0);
+      document.getElementById('stat-score').textContent = (dash.safety_score || 100) + '%';
 
-    // Donut: scan types
-    const types = stats ? stats.by_type : {};
-    renderDonut('chart-types', {
-      labels: ['SMS', 'Email Address', 'Email Body', 'URL'],
-      data: [types.sms||0, types.email_address||0, types.email_body||0, types.url||0],
-      colors: ['#00D4FF','#7B5EA7','#FFA502','#FF4757']
-    });
+      // Donut: scan types
+      const types = stats ? stats.by_type : {};
+      renderDonut('chart-types', {
+        labels: ['SMS', 'Email Address', 'Email Body', 'URL'],
+        data: [types.sms || 0, types.email_address || 0, types.email_body || 0, types.url || 0],
+        colors: ['#00D4FF', '#7B5EA7', '#FFA502', '#FF4757']
+      });
 
-    // Donut: verdicts
-    const vd = stats ? stats.by_verdict : {};
-    renderDonut('chart-verdicts', {
-      labels: ['Dangerous', 'Phishing', 'Spam', 'Safe'],
-      data: [vd.dangerous||0, vd.phishing||0, vd.spam||0, vd.safe||0],
-      colors: ['#FF4757','#FF6B35','#FFA502','#2ED573']
-    });
+      // Donut: verdicts
+      const vd = stats ? stats.by_verdict : {};
+      renderDonut('chart-verdicts', {
+        labels: ['Dangerous', 'Phishing', 'Spam', 'Safe'],
+        data: [vd.dangerous || 0, vd.phishing || 0, vd.spam || 0, vd.safe || 0],
+        colors: ['#FF4757', '#FF6B35', '#FFA502', '#2ED573']
+      });
 
-    // Line: 30-day activity
-    const daily = stats ? stats.daily_activity : {};
-    const last30 = [];
-    for (let i = 29; i >= 0; i--) {
-      const d = new Date(); d.setDate(d.getDate() - i);
-      const key = d.toISOString().split('T')[0];
-      last30.push({ label: d.toLocaleDateString('en',{month:'short',day:'numeric'}), val: daily[key] || 0 });
+      // Line: 30-day activity
+      const daily = stats ? stats.daily_activity : {};
+      const last30 = [];
+      for (let i = 29; i >= 0; i--) {
+        const d = new Date(); d.setDate(d.getDate() - i);
+        const key = d.toISOString().split('T')[0];
+        last30.push({ label: d.toLocaleDateString('en', { month: 'short', day: 'numeric' }), val: daily[key] || 0 });
+      }
+      renderLine('chart-activity', {
+        labels: last30.map(x => x.label),
+        data: last30.map(x => x.val),
+        label: 'Scans per Day'
+      });
+
+      // Recent scans table
+      renderRecentTable(dash.recent_scans || []);
     }
-    renderLine('chart-activity', {
-      labels: last30.map(x => x.label),
-      data: last30.map(x => x.val),
-      label: 'Scans per Day'
-    });
 
-    // Recent scans table
-    renderRecentTable(dash.recent_scans || []);
-  }
-
-  function renderRecentTable(scans) {
-    const wrap = document.getElementById('recent-table');
-    if (!scans.length) {
-      wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No scans yet. <a href="scan.html" style="color:var(--blue-dark)">Run your first scan →</a></p></div>`;
-      return;
-    }
-    const iconMap = { sms:'📱', email_address:'✉️', email_body:'📄', url:'🔗' };
-    const rows = scans.map(s => {
-      const v = s.verdict || '';
-      const cls = ['DANGEROUS','PHISHING','SPAM','FAKE','DISPOSABLE'].includes(v) ? 'badge-dangerous' : v==='SUSPICIOUS' ? 'badge-suspicious' : 'badge-safe';
-      const date = new Date(s.created_at).toLocaleDateString('en',{month:'short',day:'numeric',hour:'2-digit',minute:'2-digit'});
-      return `<tr class="scan-row">
-        <td><span class="scan-type-icon">${iconMap[s.scan_type]||'🔍'}</span> ${s.scan_type.replace('_',' ')}</td>
+    function renderRecentTable(scans) {
+      const wrap = document.getElementById('recent-table');
+      if (!scans.length) {
+        wrap.innerHTML = `<div class="empty-state"><div class="empty-icon">📭</div><p>No scans yet. <a href="scan.html" style="color:var(--blue-dark)">Run your first scan →</a></p></div>`;
+        return;
+      }
+      const iconMap = { sms: 'SMS', email_address: 'EMAIL', email_body: 'BODY', url: 'URL' };
+      const rows = scans.map(s => {
+        const v = s.verdict || '';
+        const cls = ['DANGEROUS', 'PHISHING', 'SPAM', 'FAKE', 'DISPOSABLE'].includes(v) ? 'badge-dangerous' : v === 'SUSPICIOUS' ? 'badge-suspicious' : 'badge-safe';
+        const date = new Date(s.created_at).toLocaleDateString('en', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' });
+        return `<tr class="scan-row">
+        <td><span class="scan-type-icon">${iconMap[s.scan_type] || 'SCAN'}</span> ${s.scan_type.replace('_', ' ')}</td>
         <td style="max-width:280px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;font-size:0.82rem;color:var(--text-secondary);" title="${s.input_text}">${s.input_text}</td>
         <td><span class="badge ${cls}">${v}</span></td>
         <td style="font-weight:600;">${s.risk_score || 0}/100</td>
         <td style="font-size:0.8rem;color:var(--text-light);">${date}</td>
       </tr>`;
-    }).join('');
-    wrap.innerHTML = `<table><thead><tr><th>Type</th><th>Input</th><th>Verdict</th><th>Risk</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
-  }
-</script>
+      }).join('');
+      wrap.innerHTML = `<table><thead><tr><th>Type</th><th>Input</th><th>Verdict</th><th>Risk</th><th>Time</th></tr></thead><tbody>${rows}</tbody></table>`;
+    }
+  </script>
 </body>
+
 </html>

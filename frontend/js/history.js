@@ -55,7 +55,7 @@ const HistoryView = {
       const isSafe = s.prediction.includes('Safe') || s.prediction.includes('Real');
       const isSuspicious = s.prediction.includes('Suspicious');
       const tagClass = isSafe ? 'risk-tag-safe' : (isSuspicious ? 'risk-tag-medium' : 'risk-tag-high');
-      const typeIcon = s.scan_type === 'url' ? '🔗' : (s.scan_type === 'email' ? '📧' : (s.scan_type === 'message' ? '💬' : '📝'));
+      const typeIcon = s.scan_type === 'url' ? 'URL' : (s.scan_type === 'email' ? 'EMAIL' : (s.scan_type === 'message' ? 'SMS' : 'SCAN'));
 
       return `
         <tr>
@@ -154,7 +154,7 @@ const HistoryView = {
           <div style="margin-top: 18px;">
             <h4 style="font-size: 0.95rem; font-weight: 700; margin-bottom: 10px;">Detected Threat Indicators</h4>
             <div style="background: var(--bg-surface-elevated); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px;">
-              ${scan.indicators.map(i => `<div style="padding: 4px 0; font-size: 0.85rem;">⚠️ ${i}</div>`).join('')}
+              ${scan.indicators.map(i => `<div style="padding: 4px 0; font-size: 0.85rem;">${i}</div>`).join('')}
             </div>
           </div>
         `;
